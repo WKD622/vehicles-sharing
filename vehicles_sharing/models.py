@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator, Em
 
 DRIVE_TRAIN_CHOICES = {
     ('RWD', 'Rear Wheel Drive'),
@@ -18,7 +18,7 @@ class Vehicle(models.Model):
     capacity = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(8)])
     drive_train = models.CharField(choices=DRIVE_TRAIN_CHOICES)
     description = models.CharField(max_length=3000)
-    photo = models.ImageField(upload_to='users_pictures/', default='users_pictures/None/no-img.jpg')
+    photo = models.ImageField(upload_to='cars_pictures/', default='cars_pictures/None/no-img.jpg')
 
 
 

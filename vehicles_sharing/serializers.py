@@ -19,6 +19,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 class VehicleSerializer(serializers.HyperlinkedModelSerializer):
     """
+    TODO
     add drive_trains choices
     """
     price = serializers.IntegerField(min_value=0, max_value=3000000)

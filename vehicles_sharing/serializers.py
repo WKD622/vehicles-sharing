@@ -18,6 +18,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class VehicleSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    add drive_trains choices
+    """
     price = serializers.IntegerField(min_value=0, max_value=3000000)
     production_year = serializers.CharField(
         validators=[RegexValidator(regex='^.{4}$', message='Year must be 4 digits long', code='nomatch')],

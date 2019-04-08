@@ -5,7 +5,7 @@ from vehicles_sharing import views
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
-# router.register(r'vehicles', views.VehiclesViewSet)
+router.register(r'vehicles', views.VehicleViewSet)
 # router.register(r'rentals', views.RentalsViewSet)
 
 urlpatterns = [

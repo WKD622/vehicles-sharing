@@ -25,15 +25,15 @@ class VehicleSerializer(serializers.HyperlinkedModelSerializer):
     description = serializers.CharField(max_length=10000)
     brand = serializers.CharField(max_length=50)
     model = serializers.CharField(max_length=50)
-    drive_train = serializers.CharField(choices=DRIVE_TRAIN_CHOICES, max_length=4)
+    drive_train = serializers.CharField(max_length=4)
     capacity = serializers.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(8)])
-    power = serializers.IntegerField(null=True, min_value=0, max_value=10000)
+    power = serializers.IntegerField(min_value=0, max_value=10000)
     city = serializers.CharField(max_length=50)
     street = serializers.CharField(max_length=50)
 
     class Meta:
         model = Vehicle
-        fields = ('brand', 'model', 'price', 'production_year', 'description' 'drive_train', 'city', 'street', 'power',
+        fields = ('brand', 'model', 'price', 'production_year', 'description', 'drive_train', 'city', 'street', 'power',
                   'capacity')
 
 

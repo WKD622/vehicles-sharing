@@ -1,19 +1,23 @@
+from django.contrib.auth.models import User
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.db import models
-from django.core.validators import EmailValidator, RegexValidator, MinValueValidator, MaxValueValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+
+
+@receiver(post_save, sender=User)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+
 
 DRIVE_TRAIN_CHOICES = {
     ('RWD', 'Rear Wheel Drive'),
     ('FWD', 'Front Wheel Drive'),
     ('AWD', 'All Wheel Drive'),
 }
-
-
-class User(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    login = models.CharField(max_length=20)
-    password = models.CharField(max_length=50)
-    mail = models.CharField(validators=[EmailValidator], max_length=100)
 
 
 class Vehicle(models.Model):

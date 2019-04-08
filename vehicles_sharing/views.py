@@ -1,13 +1,11 @@
 from django.contrib.auth.models import User
 from rest_framework import viewsets, status
-from rest_framework.decorators import action
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
 
 from .models import Vehicle
-from .serializers import VehicleSerializer
-from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
-
 from .serializers import UserSerializer
+from .serializers import VehicleSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):

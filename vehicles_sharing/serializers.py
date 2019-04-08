@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from rest_framework import serializers
 
-from .models import Vehicle, Reservation, DRIVE_TRAIN_CHOICES
+from .models import Vehicle, Reservation
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

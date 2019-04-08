@@ -30,7 +30,7 @@ class Vehicle(models.Model):
         max_length=4)
     city = models.CharField(max_length=50)
     street = models.CharField(max_length=50)
-    power = models.IntegerField(null=True)
+    power = models.IntegerField(null=True, validators=[MinValueValidator(0), MaxValueValidator(10000)])
     capacity = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(8)])
     drive_train = models.CharField(choices=DRIVE_TRAIN_CHOICES, max_length=4)
     description = models.CharField(max_length=10000)

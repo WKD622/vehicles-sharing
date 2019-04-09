@@ -10,7 +10,7 @@ from .serializers import UserSerializer
 from .serializers import VehicleSerializer
 
 
-class Parameters:
+class FilteringParams:
     MIN_PRICE = 'min_price'
     MAX_PRICE = 'max_price'
     MIN_POWER = 'min_power'
@@ -57,29 +57,29 @@ class VehicleViewSet(viewsets.ModelViewSet):
         params = request.GET
         vehicles = Vehicle.objects.all()
         for key, value in params.items():
-            if key == Parameters.MIN_PRICE:
+            if key == FilteringParams.MIN_PRICE:
                 vehicles = vehicles.filter(price__gte=value)
-            elif key == Parameters.MAX_PRICE:
+            elif key == FilteringParams.MAX_PRICE:
                 vehicles = vehicles.filter(price__lte=value)
-            elif key == Parameters.MIN_POWER:
+            elif key == FilteringParams.MIN_POWER:
                 vehicles = vehicles.filter(power__gte=value)
-            elif key == Parameters.MAX_POWER:
+            elif key == FilteringParams.MAX_POWER:
                 vehicles = vehicles.filter(power__lte=value)
-            elif key == Parameters.CITY:
+            elif key == FilteringParams.CITY:
                 vehicles = vehicles.filter(city=value)
-            elif key == Parameters.BRAND:
+            elif key == FilteringParams.BRAND:
                 vehicles = vehicles.filter(brand=value)
-            elif key == Parameters.MODEL:
+            elif key == FilteringParams.MODEL:
                 vehicles = vehicles.filter(model=value)
-            elif key == Parameters.MIN_PRODUCTION_YEAR:
+            elif key == FilteringParams.MIN_PRODUCTION_YEAR:
                 vehicles = vehicles.filter(production_year__gte=value)
-            elif key == Parameters.MAX_PRODUCTION_YEAR:
+            elif key == FilteringParams.MAX_PRODUCTION_YEAR:
                 vehicles = vehicles.filter(production_year__lte=value)
-            elif key == Parameters.MIN_CAPACITY:
+            elif key == FilteringParams.MIN_CAPACITY:
                 vehicles = vehicles.filter(capacity__gte=value)
-            elif key == Parameters.MAX_CAPACITY:
+            elif key == FilteringParams.MAX_CAPACITY:
                 vehicles = vehicles.filter(capacity__lte=value)
-            elif key == Parameters.DRIVE_TRAIN:
+            elif key == FilteringParams.DRIVE_TRAIN:
                 vehicles = vehicles.filter(drive_train=value)
 
         # page = self.paginate_queryset(queryset)

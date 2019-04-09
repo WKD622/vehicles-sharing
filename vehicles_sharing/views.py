@@ -45,7 +45,7 @@ class VehicleViewSet(viewsets.ModelViewSet):
         else:
             return None
 
-    def check_if_params_correct(self):
+    def check_if_params_correct(self, params):
         """TODO"""
         pass
 
@@ -60,6 +60,7 @@ class VehicleViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         params = request.GET
         vehicles = Vehicle.objects.all()
+        self.check_if_params_correct(params)
         for key, value in params.items():
             if key == FilteringParams.MIN_PRICE:
                 vehicles = vehicles.filter(price__gte=value)

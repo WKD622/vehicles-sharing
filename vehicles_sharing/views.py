@@ -98,14 +98,14 @@ class VehicleViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @staticmethod
-    def normalize_query(query_string,
-                        findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
-                        normspace=re.compile(r'\s{2,}').sub):
+    def _normalize_query(query_string,
+                         findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
+                         normspace=re.compile(r'\s{2,}').sub):
         return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)]
 
-    def get_query(self, query_string, search_fields):
+    def _get_query(self, query_string, search_fields):
         query = None
-        terms = self.normalize_query(query_string)
+        terms = self._normalize_query(query_string)
         for term in terms:
             or_query = None
             for field_name in search_fields:
@@ -126,7 +126,7 @@ class VehicleViewSet(viewsets.ModelViewSet):
         found_entries = None
         if ('on' in request.GET) and request.GET['on'].strip():
             query_string = request.GET['on']
-            entry_query = self.get_query(query_string, ['brand', 'model'])
+            entry_query = self._get_query(query_string, ['brand', 'model'])
             found_entries = Vehicle.objects.filter(entry_query)
 
         serializer = self.get_serializer(found_entries, many=True)

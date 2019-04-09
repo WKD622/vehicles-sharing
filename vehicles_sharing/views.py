@@ -4,6 +4,8 @@ from rest_framework import viewsets, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.response import Response
+import re
+from django.db.models import Q
 
 from .models import Vehicle
 from .serializers import UserSerializer
@@ -58,10 +60,10 @@ class VehicleViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def list(self, request, *args, **kwargs):
-        params = request.GET
+        url_parameters = request.GET
         vehicles = Vehicle.objects.all()
-        self._check_if_params_correct(params)
-        for key, value in params.items():
+        self._check_if_params_correct(url_parameters)
+        for key, value in url_parameters.items():
             if key == FilteringParams.MIN_PRICE:
                 vehicles = vehicles.filter(price__gte=value)
             elif key == FilteringParams.MAX_PRICE:
@@ -95,7 +97,46 @@ class VehicleViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(vehicles, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['post'])
+    @staticmethod
+    def normalize_query(query_string,
+                        findterms=re.compile(r'"([^"]+)"|(\S+)').findall,
+                        normspace=re.compile(r'\s{2,}').sub):
+        return [normspace(' ', (t[0] or t[1]).strip()) for t in findterms(query_string)]
+
+    def get_query(self, query_string, search_fields):
+        query = None
+        terms = self.normalize_query(query_string)
+        for term in terms:
+            or_query = None
+            for field_name in search_fields:
+                q = Q(**{"%s__icontains" % field_name: term})
+                if or_query is None:
+                    or_query = q
+                else:
+                    or_query = or_query | q
+            if query is None:
+                query = or_query
+            else:
+                query = query & or_query
+        return query
+
+    @action(detail=False, methods=['GET'])
+    def search(self, request, *args, **kwargs):
+        query_string = ''
+        found_entries = None
+        if ('on' in request.GET) and request.GET['on'].strip():
+            query_string = request.GET['on']
+            entry_query = self.get_query(query_string, ['brand', 'model'])
+            found_entries = Vehicle.objects.filter(entry_query)
+
+        serializer = self.get_serializer(found_entries, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['POST'])
     def make_reservation(self, request, *args, **kwargs):
         """TODO"""
         pass
+
+
+class ReservationViewSet(viewsets.ModelViewSet):
+    pass

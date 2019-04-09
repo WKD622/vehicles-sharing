@@ -28,7 +28,7 @@ class VehicleSerializer(serializers.HyperlinkedModelSerializer):
     description = serializers.CharField(max_length=10000)
     brand = serializers.CharField(max_length=50)
     model = serializers.CharField(max_length=50)
-    drive_train = serializers.CharField(max_length=4)
+    drive_train = serializers.CharField(min_length=3, max_length=3)
     capacity = serializers.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(8)])
     power = serializers.IntegerField(min_value=0, max_value=10000)
     city = serializers.CharField(max_length=50)

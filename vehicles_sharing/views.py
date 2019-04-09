@@ -40,7 +40,7 @@ class VehicleViewSet(viewsets.ModelViewSet):
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
     filter_backends = (filters.OrderingFilter,)
-    ordering_fields = ('price', 'power')
+    ordering_fields = ('price', 'power', 'production_year')
 
     @staticmethod
     def _get_user_from_token(request):
@@ -65,27 +65,27 @@ class VehicleViewSet(viewsets.ModelViewSet):
         for key, value in params.items():
             if key == Parameters.MIN_PRICE:
                 vehicles = vehicles.filter(price__gte=value)
-            if key == Parameters.MAX_PRICE:
+            elif key == Parameters.MAX_PRICE:
                 vehicles = vehicles.filter(price__lte=value)
-            if key == Parameters.MIN_POWER:
+            elif key == Parameters.MIN_POWER:
                 vehicles = vehicles.filter(power__gte=value)
-            if key == Parameters.MAX_POWER:
+            elif key == Parameters.MAX_POWER:
                 vehicles = vehicles.filter(power__lte=value)
-            if key == Parameters.CITY:
+            elif key == Parameters.CITY:
                 vehicles = vehicles.filter(city=value)
-            if key == Parameters.BRAND:
+            elif key == Parameters.BRAND:
                 vehicles = vehicles.filter(brand=value)
-            if key == Parameters.MODEL:
+            elif key == Parameters.MODEL:
                 vehicles = vehicles.filter(model=value)
-            if key == Parameters.MIN_PRODUCTION_YEAR:
+            elif key == Parameters.MIN_PRODUCTION_YEAR:
                 vehicles = vehicles.filter(production_year__gte=value)
-            if key == Parameters.MAX_PRODUCTION_YEAR:
+            elif key == Parameters.MAX_PRODUCTION_YEAR:
                 vehicles = vehicles.filter(production_year__lte=value)
-            if key == Parameters.MIN_CAPACITY:
+            elif key == Parameters.MIN_CAPACITY:
                 vehicles = vehicles.filter(capacity__gte=value)
-            if key == Parameters.MAX_CAPACITY:
+            elif key == Parameters.MAX_CAPACITY:
                 vehicles = vehicles.filter(capacity__lte=value)
-            if key == Parameters.DRIVE_TRAIN:
+            elif key == Parameters.DRIVE_TRAIN:
                 vehicles = vehicles.filter(drive_train=value)
 
         # page = self.paginate_queryset(queryset)

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from rest_framework import serializers
+from django.utils import timezone
 
 from .models import Vehicle, Reservation
 
@@ -23,9 +24,7 @@ class VehicleSerializer(serializers.HyperlinkedModelSerializer):
     add drive_trains choices
     """
     price = serializers.IntegerField(min_value=0, max_value=3000000)
-    production_year = serializers.CharField(
-        validators=[RegexValidator(regex='^.{4}$', message='Year must be 4 digits long', code='nomatch')],
-        max_length=4)
+    production_year = serializers.IntegerField(min_value=1800, max_value=timezone.now().year + 2)
     description = serializers.CharField(max_length=10000)
     brand = serializers.CharField(max_length=50)
     model = serializers.CharField(max_length=50)

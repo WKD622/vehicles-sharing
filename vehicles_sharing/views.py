@@ -16,6 +16,21 @@ class Sorting(Enum):
     LOW_TO_HIGH = "LOW_TO_HIGH"
 
 
+class Parameters:
+    MIN_PRICE = 'min_price'
+    MAX_PRICE = 'max_price'
+    MIN_POWER = 'min_power'
+    MAX_POWER = 'max_power'
+    CITY = 'city'
+    BRAND = 'brand'
+    MODEL = 'model'
+    MIN_PRODUCTION_YEAR = 'min_production_year'
+    MAX_PRODUCTION_YEAR = 'min_production_year'
+    MIN_CAPACITY = 'min_capacity'
+    MAX_CAPACITY = 'max_capacity'
+    DRIVE_TRAIN = 'drive_train'
+
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
@@ -44,39 +59,42 @@ class VehicleViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    # def list(self, request, *args, **kwargs):
-        # min_price = request.GET.get('min_price')
-        # max_price = request.GET.get('max_price')
-        # min_power = request.GET.get('min_power')
-        # max_power = request.GET.get('max_power')
-        # city = request.GET.get('city')
-        # brand = request.GET.get('brand')
-        # model = request.GET.get('model')
-        # min_production_year = request.GET.get('min_production_year')
-        # min_production_year = request.GET.get('min_production_year')
-        # power = request.GET.get('power')
-        # min_capacity = request.GET.get('min_capacity')
-        # max_capacity = request.GET.get('max_capacity')
-        # drive_train = request.GET.get('drive_train')
-        #
-        # for key, value in variables.items():
-        #     if key == 'x' and value:
-        #         models = models.filter(x=value)
-        #     if key == 'y' and value:
-        #         models = models.filter(y=value)
-        #     if key == 'z' and value:
-        #         models = models.filter(z=value)
-        #
-        # queryset = Vehicle.objects.all().filter(price__gte=min_price). \
-        #     filter(price__lte=max_price)
+    def list(self, request, *args, **kwargs):
+        params = request.GET
+        vehicles = Vehicle.objects.all()
+        for key, value in params.items():
+            if key == Parameters.MIN_PRICE:
+                vehicles = vehicles.filter(price__gte=value)
+            if key == Parameters.MAX_PRICE:
+                vehicles = vehicles.filter(price__lte=value)
+            if key == Parameters.MIN_POWER:
+                vehicles = vehicles.filter(power__gte=value)
+            if key == Parameters.MAX_POWER:
+                vehicles = vehicles.filter(power__lte=value)
+            if key == Parameters.CITY:
+                vehicles = vehicles.filter(city=value)
+            if key == Parameters.BRAND:
+                vehicles = vehicles.filter(brand=value)
+            if key == Parameters.MODEL:
+                vehicles = vehicles.filter(model=value)
+            if key == Parameters.MIN_PRODUCTION_YEAR:
+                vehicles = vehicles.filter(production_year__gte=value)
+            if key == Parameters.MAX_PRODUCTION_YEAR:
+                vehicles = vehicles.filter(production_year__lte=value)
+            if key == Parameters.MIN_CAPACITY:
+                vehicles = vehicles.filter(capacity__gte=value)
+            if key == Parameters.MAX_CAPACITY:
+                vehicles = vehicles.filter(capacity__lte=value)
+            if key == Parameters.DRIVE_TRAIN:
+                vehicles = vehicles.filter(drive_train=value)
 
         # page = self.paginate_queryset(queryset)
         # if page is not None:
         #     serializer = self.get_serializer(page, many=True)
         #     return self.get_paginated_response(serializer.data)
-        #
-        # serializer = self.get_serializer(queryset, many=True)
-        # return Response(serializer.data)
+
+        serializer = self.get_serializer(vehicles, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['post'])
     def make_reservation(self, request, *args, **kwargs):

@@ -5,6 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+from django.utils import timezone
 
 
 @receiver(post_save, sender=User)
@@ -25,12 +26,11 @@ class Vehicle(models.Model):
     model = models.CharField(max_length=50)
     price = models.IntegerField(default=0)
     owner_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    production_year = models.CharField(
-        validators=[RegexValidator(regex='^.{4}$', message='Year must be 4 digits long', code='nomatch')],
-        max_length=4)
+    production_year = models.IntegerField(validators=[MinValueValidator(1800), MaxValueValidator(10000)])
     city = models.CharField(max_length=50)
     street = models.CharField(max_length=50)
-    power = models.IntegerField(null=True, validators=[MinValueValidator(0), MaxValueValidator(10000)])
+    power = models.IntegerField(null=True,
+                                validators=[MinValueValidator(0), MaxValueValidator(timezone.now().year + 2)])
     capacity = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(8)])
     drive_train = models.CharField(choices=DRIVE_TRAIN_CHOICES, max_length=4)
     description = models.CharField(max_length=10000)

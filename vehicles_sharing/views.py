@@ -8,12 +8,6 @@ from rest_framework.response import Response
 from .models import Vehicle
 from .serializers import UserSerializer
 from .serializers import VehicleSerializer
-from enum import Enum
-
-
-class Sorting(Enum):
-    HIGH_TO_LOW = "HIGH_TO_LOW"
-    LOW_TO_HIGH = "LOW_TO_HIGH"
 
 
 class Parameters:

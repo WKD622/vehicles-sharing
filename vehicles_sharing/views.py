@@ -45,6 +45,10 @@ class VehicleViewSet(viewsets.ModelViewSet):
         else:
             return None
 
+    def check_if_params_correct(self):
+        """TODO"""
+        pass
+
     def create(self, request, *args, **kwargs):
         user = self._get_user_from_token(request)
         serializer = self.get_serializer(data=request.data)

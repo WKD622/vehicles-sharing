@@ -36,7 +36,7 @@ class VehicleSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Vehicle
-        fields = ('brand', 'model', 'price', 'production_year', 'description', 'drive_train', 'city', 'street', 'power',
+        fields = ('id', 'brand', 'model', 'price', 'production_year', 'description', 'drive_train', 'city', 'street', 'power',
                   'capacity')
 
 

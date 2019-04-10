@@ -15,6 +15,10 @@ class PomMethods:
             return None
 
     @staticmethod
+    def get_token_from_user_id(user_id):
+        return Token.objects.filter(user_id__exact=user_id)
+
+    @staticmethod
     def check_if_params_correct(self, params):
         """TODO"""
         pass
@@ -53,7 +57,7 @@ class FilteringParams:
     BRAND = 'brand'
     MODEL = 'model'
     MIN_PRODUCTION_YEAR = 'min_production_year'
-    MAX_PRODUCTION_YEAR = 'min_production_year'
+    MAX_PRODUCTION_YEAR = 'max_production_year'
     MIN_CAPACITY = 'min_capacity'
     MAX_CAPACITY = 'max_capacity'
     DRIVE_TRAIN = 'drive_train'

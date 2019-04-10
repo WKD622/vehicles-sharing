@@ -33,7 +33,7 @@ class VehicleViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         url_parameters = request.GET
         vehicles = Vehicle.objects.all()
-        pm.check_if_params_correct(url_parameters)
+        # pm.check_if_params_correct(self, url_parameters)
         for key, value in url_parameters.items():
             if key == FilteringParams.MIN_PRICE:
                 vehicles = vehicles.filter(price__gte=value)

@@ -282,11 +282,55 @@ def test_max_brand(client):
     assert set(vehicles) == {expected_vehicle_1.id, expected_vehicle_2.id}
 
 
+@pytest.mark.django_db
 def test_city(client):
-    """TODO"""
-    pass
+    # given
+    user_id = 1
+    user = UserFactory(id=user_id)
+    VehicleFactory(city='Kraków', owner_id=user)
+    VehicleFactory(city='Warszawa', owner_id=user)
+    expected_vehicle_1 = VehicleFactory(city='Opole', owner_id=user)
+    expected_number_of_vehicles = 1
+    headers = {
+        f'Authorization': 'Token {pm.get_token_from_user_id(user_id)}'
+    }
+
+    # when
+    response = client.get(urls_factory.url_not_detail(urls_factory.VEHICLES), data={'city': 'Opole'},
+                          headers=headers)
+    vehicles = list()
+
+    for x in json.loads(response.content):
+        vehicles.append(x['id'])
+
+    # then
+    assert response.status_code == 200
+    assert expected_number_of_vehicles == len(vehicles)
+    assert set(vehicles) == {expected_vehicle_1.id}
 
 
+@pytest.mark.django_db
 def test_drive_train(client):
-    """TODO"""
-    pass
+    # given
+    user_id = 1
+    user = UserFactory(id=user_id)
+    VehicleFactory(drive_train='FWD', owner_id=user)
+    VehicleFactory(drive_train='AWD', owner_id=user)
+    expected_vehicle_1 = VehicleFactory(drive_train='RWD', owner_id=user)
+    expected_number_of_vehicles = 1
+    headers = {
+        f'Authorization': 'Token {pm.get_token_from_user_id(user_id)}'
+    }
+
+    # when
+    response = client.get(urls_factory.url_not_detail(urls_factory.VEHICLES), data={'drive_train': 'RWD'},
+                          headers=headers)
+    vehicles = list()
+
+    for x in json.loads(response.content):
+        vehicles.append(x['id'])
+
+    # then
+    assert response.status_code == 200
+    assert expected_number_of_vehicles == len(vehicles)
+    assert set(vehicles) == {expected_vehicle_1.id}

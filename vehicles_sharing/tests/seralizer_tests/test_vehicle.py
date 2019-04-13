@@ -72,6 +72,23 @@ class TestBrand(TestCase):
         serializer = VehicleSerializer(data=vehicle)
         assert serializer.is_valid()
 
+    @pytest.mark.django_db
+    def test_brand_8(self):
+        user_id = 1
+        user = UserFactory(id=user_id)
+        vehicle = vars(VehicleFactory(owner_id=user, brand="12213123"))
+        serializer = VehicleSerializer(data=vehicle)
+        assert not serializer.is_valid()
+
+    @pytest.mark.django_db
+    def test_brand_9(self):
+        user_id = 1
+        user = UserFactory(id=user_id)
+        vehicle = vars(VehicleFactory(owner_id=user))
+        vehicle['brand'] = 1000
+        serializer = VehicleSerializer(data=vehicle)
+        assert not serializer.is_valid()
+
 
 class TestModel(TestCase):
     @pytest.mark.django_db
@@ -164,6 +181,15 @@ class TestPrice(TestCase):
         serializer = VehicleSerializer(data=vehicle)
         assert serializer.is_valid()
 
+    @pytest.mark.django_db
+    def test_price_6(self):
+        user_id = 1
+        user = UserFactory(id=user_id)
+        vehicle = vars(VehicleFactory(owner_id=user))
+        vehicle['price'] = "string"
+        serializer = VehicleSerializer(data=vehicle)
+        assert not serializer.is_valid()
+
 
 class TestProductionYear(TestCase):
     @pytest.mark.django_db
@@ -214,13 +240,23 @@ class TestProductionYear(TestCase):
         serializer = VehicleSerializer(data=vehicle)
         assert serializer.is_valid()
 
-    # @pytest.mark.django_db
-    # def test_production_year_7(self):
-    #     user_id = 1
-    #     user = UserFactory(id=user_id)
-    #     vehicle = vars(VehicleFactory(owner_id=user, production_year="string"))
-    #     serializer = VehicleSerializer(data=vehicle)
-    #     assert serializer.is_valid()
+    @pytest.mark.django_db
+    def test_production_year_7(self):
+        user_id = 1
+        user = UserFactory(id=user_id)
+        vehicle = vars(VehicleFactory(owner_id=user))
+        vehicle['production_year'] = "string"
+        serializer = VehicleSerializer(data=vehicle)
+        assert not serializer.is_valid()
+
+    @pytest.mark.django_db
+    def test_production_year_8(self):
+        user_id = 1
+        user = UserFactory(id=user_id)
+        vehicle = vars(VehicleFactory(owner_id=user))
+        vehicle['production_year'] = "123"
+        serializer = VehicleSerializer(data=vehicle)
+        assert not serializer.is_valid()
 
 
 class TestDriveTrain(TestCase):
@@ -362,6 +398,15 @@ class TestCapacity(TestCase):
         serializer = VehicleSerializer(data=vehicle)
         assert not serializer.is_valid()
 
+    @pytest.mark.django_db
+    def test_capacity_8(self):
+        user_id = 1
+        user = UserFactory(id=user_id)
+        vehicle = vars(VehicleFactory(owner_id=user))
+        vehicle['capacity'] = "string"
+        serializer = VehicleSerializer(data=vehicle)
+        assert not serializer.is_valid()
+
 
 class TestPower(TestCase):
     @pytest.mark.django_db
@@ -409,6 +454,15 @@ class TestPower(TestCase):
         user_id = 1
         user = UserFactory(id=user_id)
         vehicle = vars(VehicleFactory(owner_id=user, power=122222))
+        serializer = VehicleSerializer(data=vehicle)
+        assert not serializer.is_valid()
+
+    @pytest.mark.django_db
+    def test_power_7(self):
+        user_id = 1
+        user = UserFactory(id=user_id)
+        vehicle = vars(VehicleFactory(owner_id=user))
+        vehicle['power'] = "string"
         serializer = VehicleSerializer(data=vehicle)
         assert not serializer.is_valid()
 
@@ -470,6 +524,15 @@ class TestCity(TestCase):
         serializer = VehicleSerializer(data=vehicle)
         assert serializer.is_valid()
 
+    @pytest.mark.django_db
+    def test_city_8(self):
+        user_id = 1
+        user = UserFactory(id=user_id)
+        vehicle = vars(VehicleFactory(owner_id=user))
+        vehicle['city'] = 213123
+        serializer = VehicleSerializer(data=vehicle)
+        assert not serializer.is_valid()
+
 
 class TestStreet(TestCase):
     @pytest.mark.django_db
@@ -517,5 +580,14 @@ class TestStreet(TestCase):
         user_id = 1
         user = UserFactory(id=user_id)
         vehicle = vars(VehicleFactory(owner_id=user, city=".&&Dietla1"))
+        serializer = VehicleSerializer(data=vehicle)
+        assert not serializer.is_valid()
+
+    @pytest.mark.django_db
+    def test_street_7(self):
+        user_id = 1
+        user = UserFactory(id=user_id)
+        vehicle = vars(VehicleFactory(owner_id=user))
+        vehicle['street'] = 123123
         serializer = VehicleSerializer(data=vehicle)
         assert not serializer.is_valid()

@@ -29,8 +29,8 @@ class Vehicle(models.Model):
     price = models.IntegerField(default=0)
     owner_id = models.ForeignKey(User, on_delete=models.CASCADE)
     production_year = models.IntegerField(validators=[MinValueValidator(1800), MaxValueValidator(10000)])
-    city = models.CharField(max_length=50)
-    street = models.CharField(max_length=50)
+    city = models.CharField(max_length=50, validators=[validators.only_letters])
+    street = models.CharField(max_length=50, validators=[validators.only_letters])
     power = models.IntegerField(null=True,
                                 validators=[MinValueValidator(0), MaxValueValidator(timezone.now().year + 2)])
     capacity = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(8)])

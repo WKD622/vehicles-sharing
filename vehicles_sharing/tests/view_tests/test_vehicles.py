@@ -1,6 +1,5 @@
 import pytest
 from rest_framework.utils import json
-
 from . import urls_factory
 from ...factories import VehicleFactory, UserFactory
 from ...pom import PomMethods as pm
@@ -324,6 +323,90 @@ def test_drive_train(client):
 
     # when
     response = client.get(urls_factory.url_not_detail(urls_factory.VEHICLES), data={'drive_train': 'RWD'},
+                          headers=headers)
+    vehicles = list()
+
+    for x in json.loads(response.content):
+        vehicles.append(x['id'])
+
+    # then
+    assert response.status_code == 200
+    assert expected_number_of_vehicles == len(vehicles)
+    assert set(vehicles) == {expected_vehicle_1.id}
+
+
+@pytest.mark.django_db
+def test_searching_model(client):
+    # given
+    user_id = 1
+    user = UserFactory(id=user_id)
+    VehicleFactory(brand='Mercedes', model="190", owner_id=user)
+    VehicleFactory(brand='Opel', model="Vectra", owner_id=user)
+    expected_vehicle_1 = VehicleFactory(brand='Opel', model="Astra", owner_id=user)
+    expected_number_of_vehicles = 1
+    token = pm.get_token_from_user_id(user_id)
+    headers = {
+        f'Authorization': 'Token {pm.get_token_from_user_id(user_id)}'
+    }
+
+    # when
+    response = client.get(urls_factory.url_not_detail(urls_factory.VEHICLES, 'search'), data={'on': 'Astra'},
+                          headers=headers)
+    vehicles = list()
+
+    for x in json.loads(response.content):
+        vehicles.append(x['id'])
+
+    # then
+    assert response.status_code == 200
+    assert expected_number_of_vehicles == len(vehicles)
+    assert set(vehicles) == {expected_vehicle_1.id}
+
+
+@pytest.mark.django_db
+def test_searching_model_brand(client):
+    # given
+    user_id = 1
+    user = UserFactory(id=user_id)
+    VehicleFactory(brand='Mercedes', model="Astra", owner_id=user)
+    VehicleFactory(brand='Opel', model="Vectra", owner_id=user)
+    expected_vehicle_1 = VehicleFactory(brand='Opel', model="Astra", owner_id=user)
+    expected_number_of_vehicles = 1
+    token = pm.get_token_from_user_id(user_id)
+    headers = {
+        f'Authorization': 'Token {pm.get_token_from_user_id(user_id)}'
+    }
+
+    # when
+    response = client.get(urls_factory.url_not_detail(urls_factory.VEHICLES, 'search'), data={'on': 'Opel Astra'},
+                          headers=headers)
+    vehicles = list()
+
+    for x in json.loads(response.content):
+        vehicles.append(x['id'])
+
+    # then
+    assert response.status_code == 200
+    assert expected_number_of_vehicles == len(vehicles)
+    assert set(vehicles) == {expected_vehicle_1.id}
+
+
+@pytest.mark.django_db
+def test_searching_brand(client):
+    # given
+    user_id = 1
+    user = UserFactory(id=user_id)
+    VehicleFactory(brand='Mercedes', model="190", owner_id=user)
+    VehicleFactory(brand='Mercedes', model="W123", owner_id=user)
+    expected_vehicle_1 = VehicleFactory(brand='Opel', model="Astra", owner_id=user)
+    expected_number_of_vehicles = 1
+    token = pm.get_token_from_user_id(user_id)
+    headers = {
+        f'Authorization': 'Token {pm.get_token_from_user_id(user_id)}'
+    }
+
+    # when
+    response = client.get(urls_factory.url_not_detail(urls_factory.VEHICLES, 'search'), data={'on': 'Opel'},
                           headers=headers)
     vehicles = list()
 

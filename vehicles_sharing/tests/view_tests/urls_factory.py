@@ -9,7 +9,9 @@ def url_not_detail(content, method=''):
     :param options:
     :return:
     """
-    return f'/vehicles_sharing/{content}/{method}'
+    if not method:
+        return f'/vehicles_sharing/{content}/'
+    return f'/vehicles_sharing/{content}/{method}/'
 
 
 def url_detail(content, id, method=''):

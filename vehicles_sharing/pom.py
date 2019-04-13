@@ -66,9 +66,9 @@ class FilteringParams:
 
 
 class Validators:
-    brand_regex = RegexValidator(regex=r'^[A-Za-z \-]*$', message='Only alphanumeric characters and - are allowed.')
+    brand = RegexValidator(regex=r'^[A-Za-z \-]*$', message='Only alphanumeric characters and - are allowed.')
     only_letters = RegexValidator(regex=r'^[A-Za-z]*$', message='Only alphanumeric characters and - are allowed.')
     alphanumeric = RegexValidator(regex=r'^[a-zA-Z0-9]*$', message='Only letters, digits and - are allowed.')
     numeric = RegexValidator(regex=r'^[0-9]*$', message='Only digits are allowed.')
     drive_train = RegexValidator(regex=r'RWD|AWD|FWD', message='Only digits are allowed.')
-    city = RegexValidator(regex=r'^[A-Za-z \-]*$', message='Only alphanumeric characters and - are allowed.')
+    city_street = RegexValidator(regex=r'^[A-Za-z \-]*$', message='Only alphanumeric characters and - are allowed.')

@@ -24,20 +24,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class VehicleSerializer(serializers.HyperlinkedModelSerializer):
-    """
-    TODO
-    add drive_trains choices
-    """
     price = serializers.IntegerField(min_value=0, max_value=3000000)
     production_year = serializers.IntegerField(min_value=1800, max_value=timezone.now().year + 2)
     description = serializers.CharField(max_length=10000)
-    brand = serializers.CharField(max_length=50, validators=[validators.brand_regex])
+    brand = serializers.CharField(max_length=50, validators=[validators.brand])
     model = serializers.CharField(max_length=50, validators=[validators.alphanumeric])
     drive_train = serializers.CharField(min_length=3, max_length=3, validators=[validators.drive_train])
     capacity = serializers.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(8)])
-    power = serializers.IntegerField(min_value=0, max_value=10000)
-    city = serializers.CharField(max_length=50, validators=[validators.city])
-    street = serializers.CharField(max_length=50, validators=[validators.city])
+    power = serializers.IntegerField(allow_null=True, min_value=0, max_value=10000)
+    city = serializers.CharField(max_length=50, validators=[validators.city_street])
+    street = serializers.CharField(max_length=50, validators=[validators.city_street])
 
     class Meta:
         model = Vehicle

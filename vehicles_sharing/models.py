@@ -24,13 +24,14 @@ DRIVE_TRAIN_CHOICES = {
 
 
 class Vehicle(models.Model):
-    brand = models.CharField(max_length=50, validators=[validators.brand_regex])
+    brand = models.CharField(max_length=50, validators=[validators.brand])
     model = models.CharField(max_length=50, validators=[validators.alphanumeric])
-    price = models.IntegerField(default=0)
+    price = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(3000000)])
     owner_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    production_year = models.IntegerField(validators=[MinValueValidator(1800), MaxValueValidator(10000)])
-    city = models.CharField(max_length=50, validators=[validators.only_letters])
-    street = models.CharField(max_length=50, validators=[validators.only_letters])
+    production_year = models.IntegerField(
+        validators=[MinValueValidator(1800), MaxValueValidator(timezone.now().year + 2)])
+    city = models.CharField(max_length=50, validators=[validators.city_street])
+    street = models.CharField(max_length=50, validators=[validators.city_street])
     power = models.IntegerField(null=True,
                                 validators=[MinValueValidator(0), MaxValueValidator(timezone.now().year + 2)])
     capacity = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(8)])

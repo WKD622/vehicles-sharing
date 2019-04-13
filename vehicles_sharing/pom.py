@@ -50,7 +50,7 @@ class PomMethods:
         return query
 
 
-class FilteringParams:
+class VehicleFilteringParams:
     MIN_PRICE = 'min_price'
     MAX_PRICE = 'max_price'
     MIN_POWER = 'min_power'

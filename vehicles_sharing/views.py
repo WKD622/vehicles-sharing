@@ -8,7 +8,7 @@ from .models import Vehicle
 from .pom import PomMethods as pm
 from .serializers import UserSerializer
 from .serializers import VehicleSerializer
-from .pom import FilteringParams
+from .pom import VehicleFilteringParams
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -35,29 +35,29 @@ class VehicleViewSet(viewsets.ModelViewSet):
         vehicles = Vehicle.objects.all()
         # pm.check_if_params_correct(self, url_parameters)
         for key, value in url_parameters.items():
-            if key == FilteringParams.MIN_PRICE:
+            if key == VehicleFilteringParams.MIN_PRICE:
                 vehicles = vehicles.filter(price__gte=value)
-            elif key == FilteringParams.MAX_PRICE:
+            elif key == VehicleFilteringParams.MAX_PRICE:
                 vehicles = vehicles.filter(price__lte=value)
-            elif key == FilteringParams.MIN_POWER:
+            elif key == VehicleFilteringParams.MIN_POWER:
                 vehicles = vehicles.filter(power__gte=value)
-            elif key == FilteringParams.MAX_POWER:
+            elif key == VehicleFilteringParams.MAX_POWER:
                 vehicles = vehicles.filter(power__lte=value)
-            elif key == FilteringParams.CITY:
+            elif key == VehicleFilteringParams.CITY:
                 vehicles = vehicles.filter(city=value)
-            elif key == FilteringParams.BRAND:
+            elif key == VehicleFilteringParams.BRAND:
                 vehicles = vehicles.filter(brand=value)
-            elif key == FilteringParams.MODEL:
+            elif key == VehicleFilteringParams.MODEL:
                 vehicles = vehicles.filter(model=value)
-            elif key == FilteringParams.MIN_PRODUCTION_YEAR:
+            elif key == VehicleFilteringParams.MIN_PRODUCTION_YEAR:
                 vehicles = vehicles.filter(production_year__gte=value)
-            elif key == FilteringParams.MAX_PRODUCTION_YEAR:
+            elif key == VehicleFilteringParams.MAX_PRODUCTION_YEAR:
                 vehicles = vehicles.filter(production_year__lte=value)
-            elif key == FilteringParams.MIN_CAPACITY:
+            elif key == VehicleFilteringParams.MIN_CAPACITY:
                 vehicles = vehicles.filter(capacity__gte=value)
-            elif key == FilteringParams.MAX_CAPACITY:
+            elif key == VehicleFilteringParams.MAX_CAPACITY:
                 vehicles = vehicles.filter(capacity__lte=value)
-            elif key == FilteringParams.DRIVE_TRAIN:
+            elif key == VehicleFilteringParams.DRIVE_TRAIN:
                 vehicles = vehicles.filter(drive_train=value)
 
         serializer = self.get_serializer(vehicles, many=True)

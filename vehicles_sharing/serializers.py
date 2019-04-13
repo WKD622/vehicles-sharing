@@ -6,11 +6,6 @@ from rest_framework import serializers
 from .models import Vehicle, Reservation
 from .pom import Validators as validators
 
-
-class Validators:
-    only_letters = RegexValidator(regex=r'^[A-Z a-z]*', message='Only alphanumeric characters are allowed.')
-
-
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     email = serializers.EmailField()
 

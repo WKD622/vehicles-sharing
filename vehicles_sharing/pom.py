@@ -1,4 +1,6 @@
 import re
+
+from django.core.validators import RegexValidator
 from django.db.models import Q
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
@@ -61,3 +63,9 @@ class FilteringParams:
     MIN_CAPACITY = 'min_capacity'
     MAX_CAPACITY = 'max_capacity'
     DRIVE_TRAIN = 'drive_train'
+
+
+class Validators:
+    brand_regex = RegexValidator(regex=r'^[A-Za-z \-]*$', message='Only alphanumeric characters and - are allowed.')
+    only_letters = RegexValidator(regex=r'^[A-Za-z]*$', message='Only alphanumeric characters and - are allowed.')
+    alphanumeric = RegexValidator(regex=r'^[a-zA-Z0-9]*$', message='Only letters, digits and - are allowed.')

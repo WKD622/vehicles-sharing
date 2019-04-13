@@ -1,11 +1,13 @@
 from django.contrib.auth.models import User
-from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
 from django.utils import timezone
+from rest_framework.authtoken.models import Token
+
+from .pom import Validators as validators
 
 
 @receiver(post_save, sender=User)
@@ -22,8 +24,8 @@ DRIVE_TRAIN_CHOICES = {
 
 
 class Vehicle(models.Model):
-    brand = models.CharField(max_length=50)
-    model = models.CharField(max_length=50)
+    brand = models.CharField(max_length=50, validators=[validators.brand_regex])
+    model = models.CharField(max_length=50, validators=[validators.alphanumeric])
     price = models.IntegerField(default=0)
     owner_id = models.ForeignKey(User, on_delete=models.CASCADE)
     production_year = models.IntegerField(validators=[MinValueValidator(1800), MaxValueValidator(10000)])

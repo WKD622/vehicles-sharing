@@ -1,9 +1,14 @@
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
-from rest_framework import serializers
 from django.utils import timezone
+from rest_framework import serializers
 
 from .models import Vehicle, Reservation
+from .pom import Validators as validators
+
+
+class Validators:
+    only_letters = RegexValidator(regex=r'^[A-Z a-z]*', message='Only alphanumeric characters are allowed.')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -26,8 +31,8 @@ class VehicleSerializer(serializers.HyperlinkedModelSerializer):
     price = serializers.IntegerField(min_value=0, max_value=3000000)
     production_year = serializers.IntegerField(min_value=1800, max_value=timezone.now().year + 2)
     description = serializers.CharField(max_length=10000)
-    brand = serializers.CharField(max_length=50)
-    model = serializers.CharField(max_length=50)
+    brand = serializers.CharField(max_length=50, validators=[validators.brand_regex])
+    model = serializers.CharField(max_length=50, validators=[validators.alphanumeric])
     drive_train = serializers.CharField(min_length=3, max_length=3)
     capacity = serializers.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(8)])
     power = serializers.IntegerField(min_value=0, max_value=10000)
@@ -36,8 +41,9 @@ class VehicleSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Vehicle
-        fields = ('id', 'brand', 'model', 'price', 'production_year', 'description', 'drive_train', 'city', 'street', 'power',
-                  'capacity')
+        fields = (
+            'id', 'brand', 'model', 'price', 'production_year', 'description', 'drive_train', 'city', 'street', 'power',
+            'capacity')
 
 
 class ReservationSerializer(serializers.HyperlinkedModelSerializer):

@@ -1,14 +1,15 @@
 import factory.fuzzy
 from .models import *
 from django.utils import timezone
+import string
 
 
 class VehicleFactory(factory.DjangoModelFactory):
     class Meta:
         model = Vehicle
 
-    brand = factory.Sequence(lambda n: 'brand ' + str(n))
-    model = factory.Sequence(lambda n: 'model ' + str(n))
+    brand = factory.fuzzy.FuzzyText(length=10, chars=string.ascii_uppercase + string.ascii_lowercase)
+    model = factory.fuzzy.FuzzyText(length=10, chars=string.ascii_uppercase + string.ascii_lowercase + string.digits)
     price = factory.fuzzy.FuzzyInteger(100, 1000)
     owner_id = factory.Sequence(lambda n: str(n))
     production_year = factory.fuzzy.FuzzyInteger(1850, timezone.now().year + 2)

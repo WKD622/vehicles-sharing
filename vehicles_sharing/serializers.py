@@ -6,6 +6,7 @@ from rest_framework import serializers
 from .models import Vehicle, Reservation
 from .pom import Validators as validators
 
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     email = serializers.EmailField()
 
@@ -40,4 +41,4 @@ class VehicleSerializer(serializers.HyperlinkedModelSerializer):
 class ReservationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Reservation
-        fields = ('start_date', 'end_date', 'active', 'message', 'car_id', 'owner_id')
+        fields = ('start_date', 'end_date', 'active', 'message', 'car_id', 'owner_id', 'client_id')

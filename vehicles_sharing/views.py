@@ -80,16 +80,15 @@ class VehicleViewSet(viewsets.ModelViewSet):
     def make_reservation(self, request, *args, **kwargs):
         vehicle = self.get_object()
         print(vehicle.id)
-        vehicle_id = vehicle.id
+        owner = vehicle.owner_id
         client = pm.get_user_from_token(request)
-        owner_id = vehicle.owner_id
         start_date = request.POST.get('start')
         end_date = request.POST.get('end')
         message = request.POST.get('message')
         reservation = {
-            'client_id': client.id,
-            'owner_id': owner_id.id,
-            'car_id': vehicle_id,
+            'client_id': client,
+            'owner_id': owner,
+            'car_id': vehicle,
             'start_date': start_date,
             'end_date': end_date,
             'active': True,
@@ -97,39 +96,17 @@ class VehicleViewSet(viewsets.ModelViewSet):
         }
         print(reservation)
 
+        # Reservation.objects.create(**reservation)
         serializer = ReservationSerializer(data=reservation)
         serializer.is_valid()
-        serializer.save(reservation=reservation)
-        return Response(serializer.data)
-        # return Response(serializer.data)
-        # if end_date:
-        #     reservation1 = Reservation.objects.create(reservation)
-        #
-        # # serializer = ReservationSerializer(data=reservation1)
-        # # serializer.is_valid()
-        # # return Response(serializer.data)
-        # # return Response()
-        # serializer = VehicleSerializer(data=vehicle)
-        # serializer.is_valid()
+        serializer.save()
+        return Response("elo")
 
 
 class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
-    def create(self, reservation, *args, **kwargs):
-        # import pdb; pdb.set_trace();
-        #
-        print(reservation)
-        # user = pm.get_user_from_token(request)
-        # serializer = self.get_serializer(data=request.data)
-        # serializer.is_valid(raise_exception=True)
-        # serializer.save(client_id=user)
-        # headers = self.get_success_headers(serializer.data)
-        return Response('eloszki' + reservation.id)
-
-    def list(self, request, *args, **kwargs):
-        url_parameters = request.GET
-        reservations = Vehicle.objects.all()
-        serializer = self.get_serializer(reservations, many=True)
-        return Response(serializer.data)
+    def create(self, *args, **kwargs):
+        new = self.get_object()
+        return Response('eloszki' + new.id)

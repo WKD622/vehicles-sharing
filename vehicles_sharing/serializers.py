@@ -39,6 +39,10 @@ class VehicleSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ReservationSerializer(serializers.HyperlinkedModelSerializer):
+    client = UserSerializer(many=False)
+    car = VehicleSerializer(many=False)
+    owner = UserSerializer(many=False)
+
     class Meta:
         model = Reservation
-        fields = ('start_date', 'end_date', 'active', 'message', 'car_id', 'owner_id', 'client_id')
+        fields = ('start_date', 'end_date', 'active', 'message', 'id', 'client', 'owner', 'car')

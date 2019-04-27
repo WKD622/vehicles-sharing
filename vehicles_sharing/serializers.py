@@ -42,6 +42,10 @@ class ReservationSerializer(serializers.HyperlinkedModelSerializer):
     client = UserSerializer(many=False)
     car = VehicleSerializer(many=False)
     owner = UserSerializer(many=False)
+    message = serializers.CharField(max_length=3000)
+    active = serializers.BooleanField(required=True)
+    start_date = serializers.DateField(format="iso-8601", input_formats=['iso-8601'])
+    end_date = serializers.DateField(format="iso-8601", input_formats=['iso-8601'])
 
     class Meta:
         model = Reservation

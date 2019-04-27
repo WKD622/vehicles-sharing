@@ -125,3 +125,10 @@ class ReservationViewSet(viewsets.ModelViewSet):
             serializer.is_valid()
             self.perform_update(serializer)
             return Response(serializer.data)
+
+    @action(detail=False, methods=['GET'])
+    def my_reservations(self, request, *args, **kwargs):
+        user = pm.get_user_from_token(request)
+        reservations = Reservation.objects.filter(client=user)
+        serializer = ReservationSerializer(reservations, many=True)
+        return Response(serializer.data)

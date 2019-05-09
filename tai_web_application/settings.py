@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'pytest',
     'rest_framework.authtoken',
+    'pytest_django'
 ]
 
 REST_FRAMEWORK = {

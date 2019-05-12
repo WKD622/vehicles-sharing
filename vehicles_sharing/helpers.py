@@ -17,8 +17,12 @@ class PomMethods:
             return None
 
     @staticmethod
+    def get_user_from_username(username):
+        return User.objects.get(username=username)
+
+    @staticmethod
     def get_token_from_user_id(user_id):
-        return Token.objects.filter(user_id__exact=user_id)
+        return Token.objects.get(user_id__exact=user_id)
 
     @staticmethod
     def check_if_params_correct(self, params):

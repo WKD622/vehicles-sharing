@@ -1,29 +1,49 @@
 from django.contrib.auth.models import User
-from django_filters import filters
+from django.forms.models import model_to_dict
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from django.forms.models import model_to_dict
 
+from .helpers import PomMethods as pm
 from .models import Vehicle, Reservation
-from .pom import PomMethods as pm
+from .serializers import ReservationSerializer
 from .serializers import UserSerializer
 from .serializers import VehicleSerializer
-from .serializers import ReservationSerializer
-from .pom import VehicleFilteringParams
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = (AllowAny,)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return User.objects.all()
+        else:
+            return User.objects.filter(id=self.request.user.id)
+
+    @action(detail=False, methods=['POST'])
+    def login(self, request, *args, **kwarg):
+        username = self.request.POST.get("username")
+        password = self.request.POST.get("password")
+        try:
+            user = pm.get_user_from_username(username)
+        except User.DoesNotExist:
+            user = None
+
+        if user and user.check_password(password):
+            return Response(model_to_dict(pm.get_token_from_user_id(user.id)).get('key'))
+        raise ValidationError("Invalid username or password")
 
 
 class VehicleViewSet(viewsets.ModelViewSet):
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
-
+    permission_classes = (IsAuthenticated,)
     # filter_backends = (filters.OrderingFilter,)
-    # ordering_fields = ('price', 'power', 'production_year')
+    ordering_fields = ('price', 'power', 'production_year')
 
     def create(self, request, *args, **kwargs):
         user = pm.get_user_from_token(request)
@@ -80,19 +100,15 @@ class VehicleViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['POST'])
     def make_reservation(self, request, *args, **kwargs):
         vehicle = self.get_object()
-        owner = vehicle.owner
-        client = pm.get_user_from_token(request)
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
-        message = request.POST.get('message')
+
         new_reservation = {
-            'client': client,
-            'owner': owner,
+            'client': pm.get_user_from_token(request),
+            'owner': vehicle.owner,
             'car': vehicle,
-            'start_date': start_date,
-            'end_date': end_date,
+            'start_date': request.POST.get('start_date'),
+            'end_date': request.POST.get('end_date'),
             'active': False,
-            'message': message
+            'message': request.POST.get('message')
         }
         Reservation.objects.create(**new_reservation)
         new_reservation['client'] = model_to_dict(new_reservation['client'])
@@ -107,6 +123,7 @@ class VehicleViewSet(viewsets.ModelViewSet):
 class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+    permission_classes = (IsAuthenticated,)
 
     @action(detail=True, methods=['POST'])
     def activate(self, request, *args, **kwargs):

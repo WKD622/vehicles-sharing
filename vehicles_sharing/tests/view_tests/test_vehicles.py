@@ -2,7 +2,7 @@ import pytest
 from rest_framework.utils import json
 from . import urls_factory
 from ...factories import VehicleFactory, UserFactory
-from ...pom import PomMethods as pm
+from ...helpers import PomMethods as pm
 from django.utils import timezone as tz
 
 

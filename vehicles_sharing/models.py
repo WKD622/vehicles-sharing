@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from rest_framework.authtoken.models import Token
 
-from .pom import Validators as validators
+from .helpers import Validators as validators
 
 
 @receiver(post_save, sender=User)

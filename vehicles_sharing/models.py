@@ -27,7 +27,7 @@ class Vehicle(models.Model):
     brand = models.CharField(max_length=50, validators=[validators.brand])
     model = models.CharField(max_length=50, validators=[validators.alphanumeric])
     price = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(3000000)])
-    owner_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     production_year = models.IntegerField(
         validators=[MinValueValidator(1800), MaxValueValidator(timezone.now().year + 2)])
     city = models.CharField(max_length=50, validators=[validators.city_street])
@@ -40,9 +40,9 @@ class Vehicle(models.Model):
 
 
 class Reservation(models.Model):
-    owner_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_id')
-    client_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='client_id')
-    car_id = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='car_id')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
+    client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='client')
+    car = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='car')
     start_date = models.DateField()
     end_date = models.DateField()
     active = models.BooleanField(default=False)

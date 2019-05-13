@@ -3,10 +3,11 @@ from django.forms.models import model_to_dict
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from .helpers import PomMethods as pm
+from .helpers import PomMethods as pm, VehicleFilteringParams
 from .models import Vehicle, Reservation
 from .serializers import ReservationSerializer
 from .serializers import UserSerializer
@@ -42,8 +43,9 @@ class VehicleViewSet(viewsets.ModelViewSet):
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
     permission_classes = (IsAuthenticated,)
-    # filter_backends = (filters.OrderingFilter,)
-    ordering_fields = ('price', 'power', 'production_year')
+    filter_backends = (OrderingFilter,)
+    ordering_fields = ('price', 'power', 'production_year',)
+    ordering = ('id',)
 
     def create(self, request, *args, **kwargs):
         user = pm.get_user_from_token(request)
@@ -53,38 +55,46 @@ class VehicleViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    # def list(self, request, *args, **kwargs):
-    #     url_parameters = request.GET
-    #     vehicles = Vehicle.objects.all()
-    #     # pm.check_if_params_correct(self, url_parameters)
-    #     for key, value in url_parameters.items():
-    #         if key == VehicleFilteringParams.MIN_PRICE:
-    #             vehicles = vehicles.filter(price__gte=value)
-    #         elif key == VehicleFilteringParams.MAX_PRICE:
-    #             vehicles = vehicles.filter(price__lte=value)
-    #         elif key == VehicleFilteringParams.MIN_POWER:
-    #             vehicles = vehicles.filter(power__gte=value)
-    #         elif key == VehicleFilteringParams.MAX_POWER:
-    #             vehicles = vehicles.filter(power__lte=value)
-    #         elif key == VehicleFilteringParams.CITY:
-    #             vehicles = vehicles.filter(city=value)
-    #         elif key == VehicleFilteringParams.BRAND:
-    #             vehicles = vehicles.filter(brand=value)
-    #         elif key == VehicleFilteringParams.MODEL:
-    #             vehicles = vehicles.filter(model=value)
-    #         elif key == VehicleFilteringParams.MIN_PRODUCTION_YEAR:
-    #             vehicles = vehicles.filter(production_year__gte=value)
-    #         elif key == VehicleFilteringParams.MAX_PRODUCTION_YEAR:
-    #             vehicles = vehicles.filter(production_year__lte=value)
-    #         elif key == VehicleFilteringParams.MIN_CAPACITY:
-    #             vehicles = vehicles.filter(capacity__gte=value)
-    #         elif key == VehicleFilteringParams.MAX_CAPACITY:
-    #             vehicles = vehicles.filter(capacity__lte=value)
-    #         elif key == VehicleFilteringParams.DRIVE_TRAIN:
-    #             vehicles = vehicles.filter(drive_train=value)
-    #
-    #     serializer = self.get_serializer(vehicles, many=True)
-    #     return Response(serializer.data)
+    def list(self, request, *args, **kwargs):
+        url_parameters = request.GET
+        vehicles = Vehicle.objects
+
+        for key, value in url_parameters.items():
+            if key == VehicleFilteringParams.MIN_PRICE:
+                vehicles = vehicles.filter(price__gte=value)
+            elif key == VehicleFilteringParams.MAX_PRICE:
+                vehicles = vehicles.filter(price__lte=value)
+            elif key == VehicleFilteringParams.MIN_POWER:
+                vehicles = vehicles.filter(power__gte=value)
+            elif key == VehicleFilteringParams.MAX_POWER:
+                vehicles = vehicles.filter(power__lte=value)
+            elif key == VehicleFilteringParams.CITY:
+                vehicles = vehicles.filter(city=value)
+            elif key == VehicleFilteringParams.BRAND:
+                vehicles = vehicles.filter(brand=value)
+            elif key == VehicleFilteringParams.MODEL:
+                vehicles = vehicles.filter(model=value)
+            elif key == VehicleFilteringParams.MIN_PRODUCTION_YEAR:
+                vehicles = vehicles.filter(production_year__gte=value)
+            elif key == VehicleFilteringParams.MAX_PRODUCTION_YEAR:
+                vehicles = vehicles.filter(production_year__lte=value)
+            elif key == VehicleFilteringParams.MIN_CAPACITY:
+                vehicles = vehicles.filter(capacity__gte=value)
+            elif key == VehicleFilteringParams.MAX_CAPACITY:
+                vehicles = vehicles.filter(capacity__lte=value)
+            elif key == VehicleFilteringParams.DRIVE_TRAIN:
+                vehicles = vehicles.filter(drive_train=value)
+
+        if len(url_parameters) == 0 or len(url_parameters) == 1 and 'ordering' in url_parameters:
+            vehicles = vehicles.all()
+
+        page = self.paginate_queryset(vehicles)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(vehicles, many=True)
+        return Response(serializer.data)
 
     @action(detail=False, methods=['GET'])
     def search(self, request, *args, **kwargs):

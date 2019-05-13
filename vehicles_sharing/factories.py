@@ -37,7 +37,8 @@ class ReservationFactory(factory.DjangoModelFactory):
     owner = factory.SubFactory(UserFactory, id=factory.fuzzy.FuzzyInteger(1, 10000))
     client = factory.SubFactory(UserFactory, id=factory.fuzzy.FuzzyInteger(10000, 20000))
     car = factory.SubFactory(VehicleFactory, owner=owner)
-    start_date = factory.fuzzy.FuzzyDate(timezone.now())
-    end_date = factory.fuzzy.FuzzyDate(timezone.now() + timezone.timedelta(days=3))
+    start_date = factory.fuzzy.FuzzyDate(timezone.now(), timezone.now() + timezone.timedelta(days=1))
+    end_date = factory.fuzzy.FuzzyDate(timezone.now() + timezone.timedelta(days=2),
+                                       timezone.now() + timezone.timedelta(days=10))
     active = False
-    message = factory.fuzzy.FuzzyText(length=1000, chars=string.ascii_uppercase + string.ascii_lowercase)
+    message = factory.fuzzy.FuzzyText(length=20, chars=string.ascii_uppercase + string.ascii_lowercase)

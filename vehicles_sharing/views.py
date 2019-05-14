@@ -73,7 +73,19 @@ class VehicleViewSet(viewsets.ModelViewSet):
             raise ValidationError("You are no allowed to edit this vehicle")
 
     def destroy(self, request, *args, **kwargs):
-        if request.user == self.get_object().owner:
+        if requself.request.user)
+
+    def retrieve(self, request, *args, **kwargs):
+        if request.user == self.get_object().owner or request.user == self.get_object().client:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        else:
+            raise ValidationError("You are no allowed to view this reservation")
+
+    def update(self, request, *args, **kwargs):
+        if request.user == self.get_object().owner or request.user == self.get_object().client and not self.get_object().active:
+            partial = kwargs.pop('partialest.user == self.get_object().owner:
             instance = self.get_object()
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)

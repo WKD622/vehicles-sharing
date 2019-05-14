@@ -1,7 +1,8 @@
-import factory.fuzzy
-from .models import *
-from django.utils import timezone
 import string
+
+import factory.fuzzy
+
+from .models import *
 
 
 class UserFactory(factory.DjangoModelFactory):

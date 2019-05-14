@@ -1,4 +1,5 @@
 VEHICLES = 'vehicles'
+USERS = "users"
 
 
 def url_not_detail(content, method=''):

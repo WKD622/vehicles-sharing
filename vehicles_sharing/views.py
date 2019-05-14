@@ -168,7 +168,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
                 client=self.request.user)
 
     def retrieve(self, request, *args, **kwargs):
-        if request.user == self.get_object().owner:
+        if request.user == self.get_object().owner or request.user == self.get_object().client:
             instance = self.get_object()
             serializer = self.get_serializer(instance)
             return Response(serializer.data)
@@ -176,7 +176,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
             raise ValidationError("You are no allowed to view this reservation")
 
     def update(self, request, *args, **kwargs):
-        if request.user == self.get_object().owner:
+        if request.user == self.get_object().owner or request.user == self.get_object().client and not self.get_object().active:
             partial = kwargs.pop('partial', False)
             instance = self.get_object()
             serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -193,7 +193,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
             raise ValidationError("You are no allowed to edit this reservation")
 
     def destroy(self, request, *args, **kwargs):
-        if request.user == self.get_object().owner:
+        if request.user == self.get_object().owner or request.user == self.get_object().client and not self.get_object().active:
             instance = self.get_object()
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)

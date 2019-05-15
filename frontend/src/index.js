@@ -3,18 +3,25 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 // import Router from './routes';
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import './index.css';
 import rootReducer from './reducers'
 import * as serviceWorker from './serviceWorker';
 import MainView from "./views/MainView";
+import CarOfferView from "./components/CarOfferView";
+import Something from "./views/Something";
 
 const store = createStore(rootReducer);
 
 ReactDOM.render(
     <Provider store={store}>
         <Router>
-            <Route path="/" component={MainView} />
+            <Switch>
+                <Route path="/" exact component={MainView} />
+                <Route path="/cars" exact component={MainView}/>
+                <Route path="/user" exact component={MainView}/>
+                <Route path="/hello" component={Something} />
+            </Switch>
         </Router>
     </Provider>,
     document.getElementById('root'),

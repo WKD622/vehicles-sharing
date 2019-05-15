@@ -12,14 +12,26 @@ import { withRouter } from "react-router-dom";
 class TabBar extends Component {
 
     render() {
-        let selectedTabId = 'cars'
+        const pathname = this.props.location.pathname;
+        let selectedTabId;
+        switch (pathname) {
+            case '/cars':
+                selectedTabId = 'cars';
+                break;
+            case '/user':
+                selectedTabId = 'user';
+                break;
+            case '/':
+            default:
+                selectedTabId = 'cars';
+        }
 
         return (
             <Tabs
                 className={classNames('tabBar')}
-                defaultTabId='cars'
+                defaultTabId={selectedTabId}
                 onTabChange={(nextTabId) => {
-                    nextTabId === 'cars' ? this.props.history.push('cars') : this.props.history.push('/');
+                    this.props.history.push(nextTabId);
                 }}
             >
                 <TabList>

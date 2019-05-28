@@ -10,7 +10,7 @@ class MainView extends Component {
     render() {
         return (
             <div className="App">
-                <Link to="/">
+                <Link to="/" style={{ textDecoration: 'none', color: 'white' }}>
                     <p className="logo">Vehicles Sharing</p>
                 </Link>
                 <TabBar />

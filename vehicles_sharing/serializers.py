@@ -4,7 +4,7 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from .models import Vehicle, Reservation
-from .pom import Validators as validators
+from .helpers import Validators as validators
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

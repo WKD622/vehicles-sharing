@@ -1,29 +1,51 @@
 from django.contrib.auth.models import User
-from django_filters import filters
+from django.forms.models import model_to_dict
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from django.forms.models import model_to_dict
 
+from .helpers import PomMethods as pm, VehicleFilteringParams
 from .models import Vehicle, Reservation
-from .pom import PomMethods as pm
+from .serializers import ReservationSerializer
 from .serializers import UserSerializer
 from .serializers import VehicleSerializer
-from .serializers import ReservationSerializer
-from .pom import VehicleFilteringParams
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = (AllowAny,)
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return User.objects.all()
+        else:
+            return User.objects.filter(id=self.request.user.id)
+
+    @action(detail=False, methods=['POST'])
+    def login(self, request, *args, **kwarg):
+        username = self.request.POST.get("username")
+        password = self.request.POST.get("password")
+        try:
+            user = pm.get_user_from_username(username)
+        except User.DoesNotExist:
+            user = None
+
+        if user and user.check_password(password):
+            return Response(model_to_dict(pm.get_token_from_user_id(user.id)).get('key'))
+        raise ValidationError("Invalid username or password")
 
 
 class VehicleViewSet(viewsets.ModelViewSet):
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
-
-    # filter_backends = (filters.OrderingFilter,)
-    # ordering_fields = ('price', 'power', 'production_year')
+    permission_classes = (IsAuthenticated,)
+    filter_backends = (OrderingFilter,)
+    ordering_fields = ('price', 'power', 'production_year',)
+    ordering = ('id',)
 
     def create(self, request, *args, **kwargs):
         user = pm.get_user_from_token(request)
@@ -33,10 +55,35 @@ class VehicleViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def update(self, request, *args, **kwargs):
+        if request.user == self.get_object().owner:
+            partial = kwargs.pop('partial', False)
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+
+            if getattr(instance, '_prefetched_objects_cache', None):
+                # If 'prefetch_related' has been applied to a queryset, we need to
+                # forcibly invalidate the prefetch cache on the instance.
+                instance._prefetched_objects_cache = {}
+
+            return Response(serializer.data)
+        else:
+            raise ValidationError("You are no allowed to edit this vehicle")
+
+    def destroy(self, request, *args, **kwargs):
+        if request.user == self.get_object().owner:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            raise ValidationError("You are no allowed to delete this vehicle")
+
     def list(self, request, *args, **kwargs):
         url_parameters = request.GET
-        vehicles = Vehicle.objects.all()
-        # pm.check_if_params_correct(self, url_parameters)
+        vehicles = Vehicle.objects
+
         for key, value in url_parameters.items():
             if key == VehicleFilteringParams.MIN_PRICE:
                 vehicles = vehicles.filter(price__gte=value)
@@ -63,6 +110,14 @@ class VehicleViewSet(viewsets.ModelViewSet):
             elif key == VehicleFilteringParams.DRIVE_TRAIN:
                 vehicles = vehicles.filter(drive_train=value)
 
+        if len(url_parameters) == 0 or len(url_parameters) == 1 and 'ordering' in url_parameters:
+            vehicles = vehicles.all()
+
+        page = self.paginate_queryset(vehicles)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         serializer = self.get_serializer(vehicles, many=True)
         return Response(serializer.data)
 
@@ -80,19 +135,15 @@ class VehicleViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['POST'])
     def make_reservation(self, request, *args, **kwargs):
         vehicle = self.get_object()
-        owner = vehicle.owner
-        client = pm.get_user_from_token(request)
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
-        message = request.POST.get('message')
+
         new_reservation = {
-            'client': client,
-            'owner': owner,
+            'client': pm.get_user_from_token(request),
+            'owner': vehicle.owner,
             'car': vehicle,
-            'start_date': start_date,
-            'end_date': end_date,
+            'start_date': request.POST.get('start_date'),
+            'end_date': request.POST.get('end_date'),
             'active': False,
-            'message': message
+            'message': request.POST.get('message')
         }
         Reservation.objects.create(**new_reservation)
         new_reservation['client'] = model_to_dict(new_reservation['client'])
@@ -107,11 +158,50 @@ class VehicleViewSet(viewsets.ModelViewSet):
 class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return Reservation.objects.all()
+        else:
+            return Reservation.objects.filter(owner=self.request.user) | Reservation.objects.filter(
+                client=self.request.user)
+
+    def retrieve(self, request, *args, **kwargs):
+        if request.user == self.get_object().owner or request.user == self.get_object().client:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        else:
+            raise ValidationError("You are no allowed to view this reservation")
+
+    def update(self, request, *args, **kwargs):
+        if request.user == self.get_object().owner or request.user == self.get_object().client and not self.get_object().active:
+            partial = kwargs.pop('partial', False)
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+
+            if getattr(instance, '_prefetched_objects_cache', None):
+                instance._prefetched_objects_cache = {}
+
+            return Response(serializer.data)
+        else:
+            raise ValidationError("You are no allowed to edit this reservation")
+
+    def destroy(self, request, *args, **kwargs):
+        if request.user == self.get_object().owner or request.user == self.get_object().client and not self.get_object().active:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            raise ValidationError("You are no allowed to delete this reservation")
 
     @action(detail=True, methods=['POST'])
     def activate(self, request, *args, **kwargs):
         reservation = self.get_object()
-        if reservation:
+        if reservation and self.request.user == reservation.owner:
             serializer = ReservationSerializer(reservation, data={'active': True}, partial=True)
             serializer.is_valid()
             self.perform_update(serializer)
@@ -120,7 +210,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['POST'])
     def deactivate(self, request, *args, **kwargs):
         reservation = self.get_object()
-        if reservation:
+        if reservation and self.request.user == reservation.owner:
             serializer = ReservationSerializer(reservation, data={'active': False}, partial=True)
             serializer.is_valid()
             self.perform_update(serializer)

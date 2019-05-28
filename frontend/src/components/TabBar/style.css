@@ -1,12 +1,9 @@
 .TabList {
     padding: 0;
     text-align: center;
-
-    position: fixed;
     margin-top: 0;
     top: 0;
     width: 100%;
-    z-index: 100;
     direction: rtl;
     right: 10%;
 }

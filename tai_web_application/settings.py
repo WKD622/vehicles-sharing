@@ -28,6 +28,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'pytest',
     'rest_framework.authtoken',
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
@@ -55,6 +58,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

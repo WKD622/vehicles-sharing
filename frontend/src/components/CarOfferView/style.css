@@ -3,7 +3,7 @@
 }
 
 .carHeader {
-    background-color: #282c34;
+    background-color: transparent;
     min-height: 100vh;
     display: flex;
     flex-direction: column;

@@ -20,7 +20,7 @@ ReactDOM.render(
                 <Route path="/" exact component={MainView} />
                 <Route path="/cars" exact component={MainView}/>
                 <Route path="/user" exact component={MainView}/>
-                <Route path="/hello" component={Something} />
+                <Route path="/smth" component={MainView} />
             </Switch>
         </Router>
     </Provider>,

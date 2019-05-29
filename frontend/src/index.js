@@ -10,6 +10,7 @@ import * as serviceWorker from './serviceWorker';
 import MainView from "./views/MainView";
 import CarOfferView from "./components/CarOfferView";
 import Something from "./views/Something";
+import CarDetailView from "./views/CarDetailView";
 
 const store = createStore(rootReducer);
 
@@ -20,7 +21,7 @@ ReactDOM.render(
                 <Route path="/" exact component={MainView} />
                 <Route path="/cars" exact component={MainView}/>
                 <Route path="/user" exact component={MainView}/>
-                <Route path="/smth" component={MainView} />
+                <Route path="/cards/:cardId" component={CarDetailView} />
             </Switch>
         </Router>
     </Provider>,

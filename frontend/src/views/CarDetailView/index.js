@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import 'bootstrap/dist/css/bootstrap.css';
-import './style.css';
 import axios from 'axios';
 
-class CarOfferView extends Component {
+class CarDetailView extends Component {
     constructor() {
         super();
         this.state = {
@@ -57,4 +55,4 @@ class CarOfferView extends Component {
     }
 }
 
-export default CarOfferView;
+export default CarDetailView;

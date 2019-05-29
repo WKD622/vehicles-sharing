@@ -1,0 +1,17 @@
+.container {
+    background-color: #282c34;
+}
+
+.background-color {
+    background-color: #282c34;
+}
+
+
+.logo {
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 40px;
+}

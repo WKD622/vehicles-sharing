@@ -35,12 +35,12 @@ class CarOfferView extends Component {
                 <div className="card-block">
                     <h4 className="card-title text-md-center">{car.brand + " " + car.model}</h4>
                     <ul className="list-group list-group-flush text-md-left">
-                        <li className="list-group-item">{"Price: "+car.price+"/day"}</li>
+                        <li className="list-group-item">{"Price: "+car.price+"$/day"}</li>
                         <li className="list-group-item">{"Production year: "+car.production_year}</li>
                         <li className="list-group-item">{"City: "+car.city}</li>
                         <li className="list-group-item">{"Capacity: "+car.capacity}</li>
                     </ul>
-                    <a href="/" className="stretched-link"></a>
+                    <a  href={`/cars/${car.id}`} className="stretched-link"></a>
                 </div>
             </div>
         )

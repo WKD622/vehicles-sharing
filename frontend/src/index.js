@@ -21,7 +21,7 @@ ReactDOM.render(
                 <Route path="/" exact component={MainView} />
                 <Route path="/cars" exact component={MainView}/>
                 <Route path="/user" exact component={MainView}/>
-                <Route path="/cards/:cardId" component={CarDetailView} />
+                <Route path="/cars/:id" component={CarDetailView} />
             </Switch>
         </Router>
     </Provider>,

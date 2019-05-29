@@ -1,57 +1,97 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import axios from 'axios';
+import {Link} from "react-router-dom";
+import './style.css';
+import Carousel from "react-bootstrap/Carousel";
+import ListGroup from "react-bootstrap/ListGroup";
+import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Button from "react-bootstrap/Button";
 
 class CarDetailView extends Component {
     constructor() {
         super();
         this.state = {
-            cars: []
+            car: null,
         };
     }
 
     componentDidMount() {
-        axios.get(`http://127.0.0.1:8000/vehicles_sharing/vehicles/`, {headers: {Authorization: 'Token 63ffa1d39174ea797d0b78db0ad5f8178363dfe3'}})
+        document.body.classList.add("background-color");
+        const carId = this.props.match.params.id;
+        axios.get(`http://127.0.0.1:8000/vehicles_sharing/vehicles/${carId}`, {headers: {Authorization: 'Token 63ffa1d39174ea797d0b78db0ad5f8178363dfe3'}})
             .then(res => {
-                const cars = res.data.results;
-                this.setState({cars});
+                const car = res.data;
+                this.setState({car});
             });
     };
 
-    renderCarOffers() {
+    renderCarousel() {
+        const carimg = `https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940`;
         return (
-            this.state.cars.map(car => this.renderCarOffer(car))
+            <Carousel>
+                <Carousel.Item>
+                    <img
+                        className="d-block w-100"
+                        src={carimg}
+                        alt="First slide"
+                    />
+                </Carousel.Item>
+                <Carousel.Item>
+                    <img
+                        className="d-block w-100"
+                        src={carimg}
+                        alt="Third slide"
+                    />
+                </Carousel.Item>
+                <Carousel.Item>
+                    <img
+                        className="d-block w-100"
+                        src={carimg}
+                        alt="Third slide"
+                    />
+                </Carousel.Item>
+            </Carousel>
         )
     }
 
-    renderCarOffer(car) {
+    renderCarInfo() {
+        const car = this.state.car;
+        if (!car) return null;
         return (
-            <div className="card flex-wrap w-50 mt-3 mb-3">
-                <div className="card-header border-0">
-                    <img src="//placehold.it/200" alt=""/>
-                </div>
-                <div className="card-block">
-                    <h4 className="card-title text-md-center">{car.brand + " " + car.model}</h4>
-                    <ul className="list-group list-group-flush text-md-left">
-                        <li className="list-group-item">{"Price: "+car.price+"/day"}</li>
-                        <li className="list-group-item">{"Production year: "+car.production_year}</li>
-                        <li className="list-group-item">{"City: "+car.city}</li>
-                        <li className="list-group-item">{"Capacity: "+car.capacity}</li>
-                    </ul>
-                    <a href="/" className="stretched-link"></a>
-                </div>
-            </div>
+            <ListGroup className="">
+                <ListGroup.Item>{car.brand + " " + car.model}</ListGroup.Item>
+                <ListGroup.Item>{"Price: " + car.price + "$/day"}</ListGroup.Item>
+                <ListGroup.Item>{"Production year: " + car.production_year}</ListGroup.Item>
+                <ListGroup.Item>{"Adress: " + car.street + ", " + car.city}</ListGroup.Item>
+                <ListGroup.Item>{"Capacity: " + car.capacity}</ListGroup.Item>
+                <ListGroup.Item>{"Drive train: " + car.drive_train}</ListGroup.Item>
+                <ListGroup.Item>{"Power: " + car.power + " HP"}</ListGroup.Item>
+            </ListGroup>
         )
-    }
 
+    }
 
     render() {
         return (
-            <div class="d-flex flex-column align-items-center">
-                {this.renderCarOffers()}
+            <div className="container">
+                <Link to="/" style={{textDecoration: 'none', color: 'white'}}>
+                    <p className="logo">Vehicles Sharing</p>
+                </Link>
+                <Container>
+                    <Row>
+                        <Col sm={8}>{this.renderCarousel()}</Col>
+                        <Col sm={4} className="d-flex flex-column">
+                            {this.renderCarInfo()}
+                            <Button variant="outline-light">Make Reservation!</Button>
+                        </Col>
+                    </Row>
+                </Container>
+                <div className="mb-5"/>
             </div>
         )
-
     }
 }
 

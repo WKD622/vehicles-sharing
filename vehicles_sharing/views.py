@@ -56,7 +56,7 @@ class VehicleViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
-        if request.user == self.get_object().owner:
+        if request.user == self.get_object().owner or request.user.is_superuser:
             partial = kwargs.pop('partial', False)
             instance = self.get_object()
             serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -73,7 +73,7 @@ class VehicleViewSet(viewsets.ModelViewSet):
             raise ValidationError("You are no allowed to edit this vehicle")
 
     def destroy(self, request, *args, **kwargs):
-        if request.user == self.get_object().owner:
+        if request.user == self.get_object().owner or request.user.is_superuser:
             instance = self.get_object()
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -168,7 +168,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
                 client=self.request.user)
 
     def retrieve(self, request, *args, **kwargs):
-        if request.user == self.get_object().owner or request.user == self.get_object().client:
+        if request.user == self.get_object().owner or request.user == self.get_object().client or request.user.is_superuser:
             instance = self.get_object()
             serializer = self.get_serializer(instance)
             return Response(serializer.data)
@@ -176,7 +176,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
             raise ValidationError("You are no allowed to view this reservation")
 
     def update(self, request, *args, **kwargs):
-        if request.user == self.get_object().owner or request.user == self.get_object().client and not self.get_object().active:
+        if request.user == self.get_object().owner or request.user.is_superuser or request.user == self.get_object().client and not self.get_object().active:
             partial = kwargs.pop('partial', False)
             instance = self.get_object()
             serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -191,7 +191,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
             raise ValidationError("You are no allowed to edit this reservation")
 
     def destroy(self, request, *args, **kwargs):
-        if request.user == self.get_object().owner or request.user == self.get_object().client and not self.get_object().active:
+        if request.user == self.get_object().owner or request.user.is_superuser or request.user == self.get_object().client and not self.get_object().active:
             instance = self.get_object()
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -201,7 +201,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['POST'])
     def activate(self, request, *args, **kwargs):
         reservation = self.get_object()
-        if reservation and self.request.user == reservation.owner:
+        if reservation and self.request.user == reservation.owner or request.user.is_superuser:
             serializer = ReservationSerializer(reservation, data={'active': True}, partial=True)
             serializer.is_valid()
             self.perform_update(serializer)
@@ -210,7 +210,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['POST'])
     def deactivate(self, request, *args, **kwargs):
         reservation = self.get_object()
-        if reservation and self.request.user == reservation.owner:
+        if reservation and self.request.user == reservation.owner or request.user.is_superuser:
             serializer = ReservationSerializer(reservation, data={'active': False}, partial=True)
             serializer.is_valid()
             self.perform_update(serializer)

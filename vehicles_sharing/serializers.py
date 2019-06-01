@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from rest_framework import serializers
@@ -50,3 +51,14 @@ class ReservationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Reservation
         fields = ('start_date', 'end_date', 'active', 'message', 'id', 'client', 'owner', 'car')
+        extra_kwargs = {
+            'client': {
+                'validators': []
+            },
+            'owner': {
+                'validators': []
+            },
+            'car': {
+                'validators': []
+            },
+        }

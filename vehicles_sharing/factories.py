@@ -12,6 +12,8 @@ class UserFactory(factory.DjangoModelFactory):
     username = factory.Sequence(lambda n: 'name ' + str(n))
     password = factory.Sequence(lambda n: 'password' + str(n))
     email = factory.Sequence(lambda n: 'email' + str(n) + "@email.com")
+    first_name = factory.Sequence(lambda n: 'first_name' + str(n))
+    last_name = factory.Sequence(lambda n: 'last_name' + str(n))
 
 
 class VehicleFactory(factory.DjangoModelFactory):

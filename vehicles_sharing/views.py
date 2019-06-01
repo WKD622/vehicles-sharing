@@ -29,6 +29,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def login(self, request, *args, **kwarg):
         username = self.request.POST.get("username")
         password = self.request.POST.get("password")
+        # import pdb; pdb.set_trace();
         try:
             user = pm.get_user_from_username(username)
         except User.DoesNotExist:

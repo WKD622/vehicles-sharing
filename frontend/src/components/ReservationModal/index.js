@@ -57,7 +57,7 @@ class ReservationModal extends Component {
         };
         let headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Token 63ffa1d39174ea797d0b78db0ad5f8178363dfe3',
+            'Authorization': 'Token 2c61b7ba8b73de2f431157b40c975163a41d84d1',
         };
         let formData = this.getFormData(data);
         axios.post(`http://127.0.0.1:8000/vehicles_sharing/vehicles/${carId}/make_reservation/`, formData, {headers: headers})

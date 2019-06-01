@@ -18,7 +18,7 @@ class CarOfferView extends Component {
 
     componentDidMount() {
         document.body.classList.add("background-color");
-        axios.get(`http://127.0.0.1:8000/vehicles_sharing/vehicles/`, {headers: {Authorization: 'Token 63ffa1d39174ea797d0b78db0ad5f8178363dfe3'}})
+        axios.get(`http://127.0.0.1:8000/vehicles_sharing/vehicles/`, {headers: {Authorization: 'Token 2c61b7ba8b73de2f431157b40c975163a41d84d1'}})
             .then(res => {
                 const cars = res.data.results;
                 this.setState({cars});

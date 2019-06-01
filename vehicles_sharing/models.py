@@ -8,6 +8,7 @@ from django.utils import timezone
 from rest_framework.authtoken.models import Token
 
 from .helpers import Validators as validators
+from .helpers import PomMethods as pm
 
 
 @receiver(post_save, sender=User)
@@ -47,3 +48,6 @@ class Reservation(models.Model):
     end_date = models.DateField()
     active = models.BooleanField(default=False)
     message = models.CharField(max_length=3000)
+
+    def is_car_owner(self, user):
+        return user == self.car.owner

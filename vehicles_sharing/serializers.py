@@ -47,10 +47,12 @@ class ReservationSerializer(serializers.HyperlinkedModelSerializer):
     active = serializers.BooleanField(required=True)
     start_date = serializers.DateField(format="iso-8601", input_formats=['iso-8601'])
     end_date = serializers.DateField(format="iso-8601", input_formats=['iso-8601'])
+    reservation_on_my_vehicle = serializers.SerializerMethodField()
 
     class Meta:
         model = Reservation
-        fields = ('start_date', 'end_date', 'active', 'message', 'id', 'client', 'owner', 'car')
+        fields = (
+            'start_date', 'end_date', 'active', 'message', 'id', 'client', 'owner', 'car', 'reservation_on_my_vehicle')
         extra_kwargs = {
             'client': {
                 'validators': []
@@ -62,3 +64,7 @@ class ReservationSerializer(serializers.HyperlinkedModelSerializer):
                 'validators': []
             },
         }
+
+    def get_reservation_on_my_vehicle(self, obj):
+        user = self.context['request'].user
+        return obj.is_car_owner(user)

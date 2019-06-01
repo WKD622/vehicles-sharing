@@ -14,7 +14,7 @@ export default class LoginForm extends Component {
             password: "",
             email: "",
             isCorrect: true,
-            login: false,
+            login: true,
         };
 
         this.handleUsername = this.handleUsername.bind(this);

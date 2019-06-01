@@ -9,12 +9,14 @@ import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
+import ReservationModal from "../../components/ReservationModal";
 
 class CarDetailView extends Component {
     constructor() {
         super();
         this.state = {
             car: null,
+            showModal: false,
         };
     }
 
@@ -29,27 +31,29 @@ class CarDetailView extends Component {
     };
 
     renderCarousel() {
-        const carimg = `https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940`;
+        const carimg1 = `https://otomotopl-imagestmp.akamaized.net/images_otomotopl/924121601_1_1080x720_rev007.jpg`;
+        const carimg2 = `https://otomotopl-imagestmp.akamaized.net/images_otomotopl/924121601_4_1080x720_rev007.jpg`;
+        const carimg3 = `https://otomotopl-imagestmp.akamaized.net/images_otomotopl/924121601_14_1080x720_rev007.jpg`;
         return (
             <Carousel>
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
-                        src={carimg}
+                        src={carimg1}
                         alt="First slide"
                     />
                 </Carousel.Item>
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
-                        src={carimg}
+                        src={carimg2}
                         alt="Third slide"
                     />
                 </Carousel.Item>
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
-                        src={carimg}
+                        src={carimg3}
                         alt="Third slide"
                     />
                 </Carousel.Item>
@@ -74,6 +78,8 @@ class CarDetailView extends Component {
 
     }
 
+    modalClose = () => this.setState({ showModal: false });
+
     render() {
         return (
             <div className="container">
@@ -85,11 +91,19 @@ class CarDetailView extends Component {
                         <Col sm={8}>{this.renderCarousel()}</Col>
                         <Col sm={4} className="d-flex flex-column">
                             {this.renderCarInfo()}
-                            <Button variant="outline-light">Make Reservation!</Button>
+                            <Button
+                                onClick={() => this.setState({ showModal: true })}
+                                variant="outline-light">
+                                Make Reservation!
+                            </Button>
                         </Col>
                     </Row>
                 </Container>
                 <div className="mb-5"/>
+                <ReservationModal
+                    show={this.state.showModal}
+                    onHide={this.modalClose}
+                />
             </div>
         )
     }

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import './style.css';
-import CarOfferView from "../CarOfferView";
+import CarOfferView from "../../views/CarOfferView";
 import { FaCar, FaUserEdit } from 'react-icons/fa';
 import { withRouter } from "react-router-dom";
 

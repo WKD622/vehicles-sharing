@@ -10,7 +10,7 @@ import * as serviceWorker from './serviceWorker';
 import MainView from "./views/MainView";
 import CarDetailView from "./views/CarDetailView";
 import CreateCarView from "./views/CreateCarView";
-import LoginForm from "./components/Login/LoginForm";
+import LoginForm from "./components/Login";
 
 const store = createStore(rootReducer);
 

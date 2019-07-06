@@ -1,15 +1,18 @@
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
-from rest_framework import viewsets, status
+from django.http import Http404
+from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
+from rest_framework.generics import get_object_or_404
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from .helpers import PomMethods as pm, VehicleFilteringParams
-from .models import Vehicle, Reservation
-from .serializers import ReservationSerializer
+from .models import Vehicle, Reservation, Photo
+from .serializers import ReservationSerializer, PhotoSerializer
 from .serializers import UserSerializer
 from .serializers import VehicleSerializer
 
@@ -223,3 +226,30 @@ class ReservationViewSet(viewsets.ModelViewSet):
         reservations = Reservation.objects.filter(client=user)
         serializer = ReservationSerializer(reservations, many=True)
         return Response(serializer.data)
+
+
+class DataViewSet(viewsets.ModelViewSet):
+    queryset = Photo.objects.all()
+    serializer_class = PhotoSerializer
+
+    permission_classes = (permissions.IsAuthenticated,)
+    parser_classes = (MultiPartParser, FormParser)
+
+    def create(self, request, *args, **kwargs):
+        serializer = PhotoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+
+        try:
+            for k, v in kwargs.items():
+                for id in v.split(','):
+                    obj = get_object_or_404(Photo, pk=int(id))
+                    obj.photo.delete()
+                    self.perform_destroy(obj)
+        except Http404:
+            pass
+        return Response(status=status.HTTP_204_NO_CONTENT)

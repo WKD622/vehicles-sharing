@@ -5,3 +5,5 @@ django-filters
 pytest
 django-pytest
 factory-boy
+django-cors-headers
+django-webpack-loader

@@ -51,3 +51,13 @@ class Reservation(models.Model):
 
     def is_car_owner(self, user):
         return user == self.car.owner
+
+
+class Photo(models.Model):
+    car = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='photo', null=True)
+    photo_id = models.AutoField(primary_key=True)
+    photo = models.FileField(null=True, max_length=255)
+    date_created = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return str(self.photo.name)

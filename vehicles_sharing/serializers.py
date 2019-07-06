@@ -4,8 +4,9 @@ from django.core.validators import RegexValidator, MinValueValidator, MaxValueVa
 from django.utils import timezone
 from rest_framework import serializers
 
-from .models import Vehicle, Reservation
+from .models import Vehicle, Reservation, Photo
 from .helpers import Validators as validators
+from datetime import datetime
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -68,3 +69,30 @@ class ReservationSerializer(serializers.HyperlinkedModelSerializer):
     def get_reservation_on_my_vehicle(self, obj):
         user = self.context['request'].user
         return obj.is_car_owner(user)
+
+
+class PhotoSerializer(serializers.ModelSerializer):
+    """
+    To create POST on http://127.0.0.1:8000/vehicles_sharing/photos/
+
+    Body params:
+    field: attached photo
+    car: int
+
+    to remove DELETE on http://127.0.0.1:8000/vehicles_sharing/photos/id/
+
+    Body params:
+    photo_id: int
+    """
+
+    # photo = serializers.FileField(required=True)
+
+    class Meta:
+        model = Photo
+        fields = ('photo_id', 'photo', 'car', 'date_created')
+
+    def get_car(self, obj):
+        return obj.request.POST.car
+
+    def get_date_created(self):
+        return datetime.now()

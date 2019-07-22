@@ -8,6 +8,7 @@ import './style.css';
 import CarOfferView from "../../views/CarOfferView";
 import { FaCar, FaUserEdit } from 'react-icons/fa';
 import { withRouter } from "react-router-dom";
+import UserView from "../../views/UserView";
 
 class TabBar extends Component {
 
@@ -50,7 +51,7 @@ class TabBar extends Component {
                     <CarOfferView />
                 </TabPanel>
                 <TabPanel tabId='user'>
-                    <CarOfferView />
+                    <UserView />
                 </TabPanel>
             </Tabs>
         );

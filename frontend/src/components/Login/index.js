@@ -5,6 +5,9 @@ import "./styles.css"
 import axios from "axios";
 import LoginRegisterChangeButton from "./LoginRegisterChangeButton";
 import {withRouter} from "react-router-dom";
+import {bindActionCreators} from "redux";
+import {setToken} from "../../actions/rootActions";
+import {connect} from "react-redux";
 
 
 class LoginForm extends Component {
@@ -51,8 +54,7 @@ class LoginForm extends Component {
             username: this.state.username,
             password: this.state.password
         })).then(res => {
-            console.log('login good');
-            console.log(res);
+            this.props.setToken(res.data);
             this.props.history.push("/cars");
         }).catch(error => {
             console.log(error);
@@ -181,4 +183,8 @@ class LoginForm extends Component {
 
 }
 
-export default withRouter(LoginForm);
+const mapDispatchToProps = dispatch => bindActionCreators({
+    setToken,
+}, dispatch);
+
+export default withRouter(connect(null,mapDispatchToProps)(LoginForm));

@@ -4,3 +4,9 @@ export function setToken(token) {
         token,
     };
 }
+
+export function removeToken() {
+    return {
+        type: 'REMOVE_TOKEN',
+    };
+}

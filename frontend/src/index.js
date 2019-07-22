@@ -12,8 +12,18 @@ import CarDetailView from "./views/CarDetailView";
 import CreateCarView from "./views/CreateCarView";
 import LoginForm from "./components/Login";
 import UploadPhotoView from "./views/UploadPhotoView";
+import UserView from "./views/UserView";
+import {loadState, saveState} from "./localStorage";
+import {throttle} from "lodash";
 
-const store = createStore(rootReducer);
+const persistedState = loadState();
+const store = createStore(rootReducer, persistedState);
+
+store.subscribe(throttle(() => {
+    saveState({
+        token: store.getState().token
+    });
+}, 1000));
 
 ReactDOM.render(
     <Provider store={store}>
@@ -24,8 +34,9 @@ ReactDOM.render(
                 <Route path="/user" exact component={MainView}/>
                 <Route path="/cars/:id" component={CarDetailView} />
                 <Route path="/addCar" component={CreateCarView} />
-                <Route path="/addPhoto" component={UploadPhotoView} />
+                <Route path="/addPhoto/:id" component={UploadPhotoView} />
                 <Route path="/login" component={LoginForm}/>
+                <Route path="/user" component={UserView}/>
             </Switch>
         </Router>
     </Provider>,

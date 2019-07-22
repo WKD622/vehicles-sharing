@@ -7,6 +7,7 @@ import Card from "react-bootstrap/Card";
 import CardGroup from "react-bootstrap/CardGroup";
 import Button from "react-bootstrap/Button";
 import {withRouter} from "react-router-dom";
+import {connect} from "react-redux";
 
 class CarOfferView extends Component {
     constructor() {
@@ -16,9 +17,14 @@ class CarOfferView extends Component {
         };
     }
 
+    componentWillMount() {
+        if (!this.props.token) this.props.history.push('/login');
+    }
+
     componentDidMount() {
+        const { token } = this.props;
         document.body.classList.add("background-color");
-        axios.get(`http://127.0.0.1:8000/vehicles_sharing/vehicles/`, {headers: {Authorization: 'Token 2c61b7ba8b73de2f431157b40c975163a41d84d1'}})
+        axios.get(`http://127.0.0.1:8000/vehicles_sharing/vehicles/`, {headers: {Authorization: `Token ${token}`}})
             .then(res => {
                 const cars = res.data.results;
                 this.setState({cars});
@@ -92,4 +98,11 @@ class CarOfferView extends Component {
     }
 }
 
-export default withRouter(CarOfferView);
+const mapStateToProps = (state) => {
+    const token = state.token;
+    return {
+        token,
+    };
+};
+
+export default withRouter(connect(mapStateToProps)(CarOfferView));

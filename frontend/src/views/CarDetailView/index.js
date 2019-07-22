@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import axios from 'axios';
-import {Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import './style.css';
 import Carousel from "react-bootstrap/Carousel";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -10,6 +10,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import ReservationModal from "../../components/ReservationModal";
+import {connect} from "react-redux";
 
 class CarDetailView extends Component {
     constructor() {
@@ -20,13 +21,22 @@ class CarDetailView extends Component {
         };
     }
 
+    componentWillMount() {
+        if (!this.props.token) this.props.history.push('/login');
+    }
+
     componentDidMount() {
+        const { token } = this.props;
         document.body.classList.add("background-color");
         const carId = this.props.match.params.id;
-        axios.get(`http://127.0.0.1:8000/vehicles_sharing/vehicles/${carId}`, {headers: {Authorization: 'Token 2c61b7ba8b73de2f431157b40c975163a41d84d1'}})
+        axios.get(`http://127.0.0.1:8000/vehicles_sharing/vehicles/${carId}`, {headers: {Authorization: `Token ${token}`}})
             .then(res => {
                 const car = res.data;
                 this.setState({car});
+            });
+        axios.get(`http://127.0.0.1:8000/vehicles_sharing/photos/`, {headers: {Authorization: `Token ${token}`}})
+            .then(res => {
+                console.log(res);
             });
     };
 
@@ -109,4 +119,11 @@ class CarDetailView extends Component {
     }
 }
 
-export default CarDetailView;
+const mapStateToProps = (state) => {
+    const token = state.token;
+    return {
+        token,
+    };
+};
+
+export default withRouter(connect(mapStateToProps)(CarDetailView));

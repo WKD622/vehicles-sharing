@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
-import {Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import './style.css';
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
+import {connect} from "react-redux";
 
-export default class CreateCarView extends Component {
+class CreateCarView extends Component {
 
     constructor(props, context) {
         super(props, context);
@@ -34,6 +35,10 @@ export default class CreateCarView extends Component {
         this.handleTrain = this.handleTrain.bind(this);
         this.handleDescription = this.handleDescription.bind(this);
         this.createCar = this.createCar.bind(this);
+    }
+
+    componentWillMount() {
+        if (!this.props.token) this.props.history.push('/login');
     }
 
     componentDidMount() {
@@ -109,15 +114,16 @@ export default class CreateCarView extends Component {
             drive_train: this.state.train,
             description: this.state.description,
         };
+        const { token } = this.props;
         let headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Token 2c61b7ba8b73de2f431157b40c975163a41d84d1',
+            'Authorization': `Token ${token}`,
         };
         let formData = this.getFormData(data);
         axios.post(`http://127.0.0.1:8000/vehicles_sharing/vehicles/`, formData, {headers: headers})
             .then(res => {
-                console.log(res);
-                this.props.history.push('/cars');
+                const carId = res.data.id;
+                this.props.history.push(`addPhoto/${carId}`);
             }).catch(err => {
             console.log(err);
         })
@@ -244,3 +250,12 @@ export default class CreateCarView extends Component {
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    const token = state.token;
+    return {
+        token,
+    };
+};
+
+export default withRouter(connect(mapStateToProps)(CreateCarView));

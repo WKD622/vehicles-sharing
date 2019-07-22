@@ -8,6 +8,7 @@ import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import axios from "axios";
 import {withRouter} from "react-router-dom";
+import {connect} from "react-redux";
 
 
 class ReservationModal extends Component {
@@ -24,6 +25,10 @@ class ReservationModal extends Component {
         this.handleMessage = this.handleMessage.bind(this);
         this.onReservation = this.onReservation.bind(this);
         this.showAlert = this.showAlert.bind(this);
+    }
+
+    componentWillMount() {
+        if (!this.props.token) this.props.history.push('/login');
     }
 
     handleDate(date) {
@@ -49,6 +54,7 @@ class ReservationModal extends Component {
     }
 
     reserve() {
+        const { token } = this.props;
         const carId = this.props.match.params.id;;
         let data = {
             message: this.state.message,
@@ -57,7 +63,7 @@ class ReservationModal extends Component {
         };
         let headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Token 2c61b7ba8b73de2f431157b40c975163a41d84d1',
+            'Authorization': `Token ${token}`,
         };
         let formData = this.getFormData(data);
         axios.post(`http://127.0.0.1:8000/vehicles_sharing/vehicles/${carId}/make_reservation/`, formData, {headers: headers})
@@ -127,4 +133,11 @@ class ReservationModal extends Component {
     }
 }
 
-export default withRouter(ReservationModal);
+const mapStateToProps = (state) => {
+    const token = state.token;
+    return {
+        token,
+    };
+};
+
+export default withRouter(connect(mapStateToProps)(ReservationModal));

@@ -1,13 +1,18 @@
 import React, {Component} from 'react';
-import {Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import './style.css';
 import axios from "axios";
+import {connect} from "react-redux";
 
-export default class UploadPhotoView extends Component {
+class UploadPhotoView extends Component {
     constructor(props) {
         super(props);
         this.state = {file: '', imagePreviewUrl: ''};
         this.renderUploader = this.renderUploader.bind(this);
+    }
+
+    componentWillMount() {
+        if (!this.props.token) this.props.history.push('/login');
     }
 
     componentDidMount() {
@@ -18,6 +23,7 @@ export default class UploadPhotoView extends Component {
         e.preventDefault();
         // TODO: do something with -> this.state.file
         console.log('handle uploading-', this.state.file);
+        this.submitPhoto();
     }
 
     _handleImageChange(e) {
@@ -33,7 +39,7 @@ export default class UploadPhotoView extends Component {
             });
         }
 
-        reader.readAsBinaryString(file)
+        reader.readAsDataURL(file)
     }
 
     renderUploader() {
@@ -56,12 +62,41 @@ export default class UploadPhotoView extends Component {
                             type="submit"
                             onClick={(e) => this._handleSubmit(e)}>Upload Image
                     </button>
+                    <button className="skipButton"
+                            type="button"
+                            onClick={() =>
+                                this.props.history.push('/cars')}>Skip
+                    </button>
                 </form>
                 <div className="imgPreview">
                     {$imagePreview}
                 </div>
             </div>
         )
+    }
+
+    getFormData(object) {
+        const formData = new FormData();
+        Object.keys(object).forEach(key => formData.append(key, object[key]));
+        return formData;
+    }
+
+    submitPhoto() {
+        const carId = this.props.match.params.id;
+        const { token } = this.props;
+        let data = {
+            car_id: carId,
+            photo: this.state.file,
+        };
+        let headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`,
+        };
+        let formData = this.getFormData(data);
+        axios.post(`http://127.0.0.1:8000/vehicles_sharing/photos/`, formData, {headers: headers})
+            .then(res => {
+                this.props.history.push('/cars');
+            });
     }
 
     render() {
@@ -75,3 +110,12 @@ export default class UploadPhotoView extends Component {
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    const token = state.token;
+    return {
+        token,
+    };
+};
+
+export default withRouter(connect(mapStateToProps)(UploadPhotoView));

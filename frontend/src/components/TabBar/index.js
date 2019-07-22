@@ -44,19 +44,12 @@ class TabBar extends Component {
                             <FaUserEdit className="icon"/><span>{'User'}</span>
                             <div className='tabStone'/>
                         </Tab>
-                        <Tab tabId='smth' className='userTab'>
-                            <FaCar className="icon"/><span>{'Smth'}</span>
-                            <div className='tabStone'/>
-                        </Tab>
                     </div>
                 </TabList>
                 <TabPanel tabId='cars'>
                     <CarOfferView />
                 </TabPanel>
                 <TabPanel tabId='user'>
-                    <CarOfferView />
-                </TabPanel>
-                <TabPanel tabId='smth'>
                     <CarOfferView />
                 </TabPanel>
             </Tabs>

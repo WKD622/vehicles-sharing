@@ -11,6 +11,7 @@ import MainView from "./views/MainView";
 import CarDetailView from "./views/CarDetailView";
 import CreateCarView from "./views/CreateCarView";
 import LoginForm from "./components/Login";
+import UploadPhotoView from "./views/UploadPhotoView";
 
 const store = createStore(rootReducer);
 
@@ -23,6 +24,7 @@ ReactDOM.render(
                 <Route path="/user" exact component={MainView}/>
                 <Route path="/cars/:id" component={CarDetailView} />
                 <Route path="/addCar" component={CreateCarView} />
+                <Route path="/addPhoto" component={UploadPhotoView} />
                 <Route path="/login" component={LoginForm}/>
             </Switch>
         </Router>

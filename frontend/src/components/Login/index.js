@@ -4,9 +4,10 @@ import Button from "react-bootstrap/Button";
 import "./styles.css"
 import axios from "axios";
 import LoginRegisterChangeButton from "./LoginRegisterChangeButton";
+import {withRouter} from "react-router-dom";
 
 
-export default class LoginForm extends Component {
+class LoginForm extends Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -45,12 +46,16 @@ export default class LoginForm extends Component {
     }
 
     login() {
+        console.log('login start');
         axios.post(`http://127.0.0.1:8000/vehicles_sharing/users/login/`, this.getFormData({
             username: this.state.username,
             password: this.state.password
         })).then(res => {
+            console.log('login good');
+            console.log(res);
             this.props.history.push("/cars");
         }).catch(error => {
+            console.log(error);
             this.setState({isCorrect: false});
         })
     };
@@ -175,3 +180,5 @@ export default class LoginForm extends Component {
 
 
 }
+
+export default withRouter(LoginForm);

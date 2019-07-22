@@ -244,7 +244,6 @@ class DataViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
-
         try:
             for k, v in kwargs.items():
                 for id in v.split(','):

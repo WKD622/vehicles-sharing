@@ -47,7 +47,7 @@ class UploadPhotoView extends Component {
         console.log(imagePreviewUrl);
         let $imagePreview = null;
         if (imagePreviewUrl) {
-            $imagePreview = (<img src={imagePreviewUrl}/>);
+            $imagePreview = (<img className="carPhoto" src={imagePreviewUrl}/>);
         } else {
             $imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
         }
@@ -85,7 +85,7 @@ class UploadPhotoView extends Component {
         const carId = this.props.match.params.id;
         const { token } = this.props;
         let data = {
-            car_id: carId,
+            car: carId,
             photo: this.state.file,
         };
         let headers = {

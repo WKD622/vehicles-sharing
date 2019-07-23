@@ -58,6 +58,10 @@ h3 {
     background-color: dodgerblue;
 }
 
+.carPhoto {
+    object-fit: contain;
+}
+
 .submitButton:hover {
     background: #efefef;
 }

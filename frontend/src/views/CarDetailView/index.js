@@ -32,9 +32,10 @@ class CarDetailView extends Component {
         axios.get(`http://127.0.0.1:8000/vehicles_sharing/vehicles/${carId}`, {headers: {Authorization: `Token ${token}`}})
             .then(res => {
                 const car = res.data;
+                console.log(car);
                 this.setState({car});
             });
-        axios.get(`http://127.0.0.1:8000/vehicles_sharing/photos/`, {headers: {Authorization: `Token ${token}`}})
+        axios.get(`http://127.0.0.1:8000/vehicles_sharing/photos/${carId}`, {headers: {Authorization: `Token ${token}`}})
             .then(res => {
                 console.log(res);
             });

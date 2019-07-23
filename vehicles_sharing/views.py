@@ -231,7 +231,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
 class DataViewSet(viewsets.ModelViewSet):
     queryset = Photo.objects.all()
     serializer_class = PhotoSerializer
-    lookup_field = 'car'
+    lookup_field = 'car_id'
 
     permission_classes = (permissions.IsAuthenticated,)
     parser_classes = (MultiPartParser, FormParser)
@@ -256,7 +256,7 @@ class DataViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_objects()
-        serializer = PhotoSerializer(data=instance, many=True)
+        serializer = self.get_serializer(data=instance, many=True)
         serializer.is_valid()
         return Response(serializer.data)
 

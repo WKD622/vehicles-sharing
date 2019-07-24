@@ -111,7 +111,7 @@ class CreateCarView extends Component {
             production_year: this.state.year,
             capacity: this.state.capacity,
             power: this.state.power,
-            drive_train: this.state.train,
+            drive_train: this.state.train ? this.state.train : 'RWD',
             description: this.state.description,
         };
         const { token } = this.props;

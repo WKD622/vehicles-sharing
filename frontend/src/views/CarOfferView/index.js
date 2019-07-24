@@ -13,7 +13,8 @@ class CarOfferView extends Component {
     constructor() {
         super();
         this.state = {
-            cars: []
+            cars: [],
+            photos: [],
         };
     }
 
@@ -24,11 +25,27 @@ class CarOfferView extends Component {
     componentDidMount() {
         const { token } = this.props;
         document.body.classList.add("background-color");
-        axios.get(`http://127.0.0.1:8000/vehicles_sharing/vehicles/`, {headers: {Authorization: `Token ${token}`}})
-            .then(res => {
-                const cars = res.data.results;
-                this.setState({cars});
-            });
+        Promise.all([axios.get(`http://127.0.0.1:8000/vehicles_sharing/vehicles/`, {headers: {Authorization: `Token ${token}`}}),
+                axios.get(`http://127.0.0.1:8000/vehicles_sharing/photos/`, {headers: {Authorization: `Token ${token}`}})])
+            .then(([cars, photos]) => {
+                if(cars.data.results && photos.data.results) {
+                    let carHolders =[];
+                    carHolders.length = cars.data.count;
+                    photos.data.results.map(p => {
+                        if(p.car) {
+                            carHolders[p.car] = p.photo;
+                        }
+                    })
+                    this.setState({
+                        cars: cars.data.results,
+                        photos: carHolders,
+                    })
+                } else if (cars.data.results) {
+                    this.setState({
+                        cars: cars.data.results,
+                    })
+                }
+            })
     };
 
     renderCarOffers() {
@@ -67,10 +84,13 @@ class CarOfferView extends Component {
     }
 
     renderCarOffer(car) {
-        const imgHolder = `https://img.autobytel.com/car-reviews/autobytel/130878-10-cute-small-cars/BMW-i3.jpg`;
+        const imgHolder = this.state.photos && this.state.photos[car.id] ? this.state.photos[car.id] :
+            `https://hlfppt.org/wp-content/uploads/2017/04/placeholder.png`;
         return (
             <Card className="m-2">
-                <Card.Img variant="top" src={imgHolder}/>
+                <Card.Header>
+                    <img className="fit-image" src={imgHolder} />
+                </Card.Header>
                 <Card.Body>
                     <Card.Title>{car.brand + " " + car.model}</Card.Title>
                     <Card.Text>

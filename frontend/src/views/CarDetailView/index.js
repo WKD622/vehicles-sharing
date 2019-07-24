@@ -18,6 +18,7 @@ class CarDetailView extends Component {
         this.state = {
             car: null,
             showModal: false,
+            photos: [],
         };
     }
 
@@ -38,36 +39,26 @@ class CarDetailView extends Component {
         axios.get(`http://127.0.0.1:8000/vehicles_sharing/photos/${carId}`, {headers: {Authorization: `Token ${token}`}})
             .then(res => {
                 console.log(res);
+                let photos = [];
+                if(res.data.length) {
+                    res.data.map(p => photos.push(p.photo));
+                }
+                this.setState({photos});
             });
     };
 
     renderCarousel() {
-        const carimg1 = `https://otomotopl-imagestmp.akamaized.net/images_otomotopl/924121601_1_1080x720_rev007.jpg`;
-        const carimg2 = `https://otomotopl-imagestmp.akamaized.net/images_otomotopl/924121601_4_1080x720_rev007.jpg`;
-        const carimg3 = `https://otomotopl-imagestmp.akamaized.net/images_otomotopl/924121601_14_1080x720_rev007.jpg`;
+
         return (
             <Carousel>
+                {this.state.photos.map(photo =>
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
-                        src={carimg1}
-                        alt="First slide"
+                        src={photo}
+                        alt="car photo"
                     />
-                </Carousel.Item>
-                <Carousel.Item>
-                    <img
-                        className="d-block w-100"
-                        src={carimg2}
-                        alt="Third slide"
-                    />
-                </Carousel.Item>
-                <Carousel.Item>
-                    <img
-                        className="d-block w-100"
-                        src={carimg3}
-                        alt="Third slide"
-                    />
-                </Carousel.Item>
+                </Carousel.Item>)}
             </Carousel>
         )
     }
@@ -99,8 +90,8 @@ class CarDetailView extends Component {
                 </Link>
                 <Container>
                     <Row>
-                        <Col sm={8}>{this.renderCarousel()}</Col>
-                        <Col sm={4} className="d-flex flex-column">
+                        <Col sm={8}>{this.state.photos.length && this.renderCarousel()}</Col>
+                        <Col sm={this.state.photos.length ? 4 : 12} className="d-flex flex-column">
                             {this.renderCarInfo()}
                             <Button
                                 onClick={() => this.setState({ showModal: true })}

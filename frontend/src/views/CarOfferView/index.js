@@ -65,14 +65,17 @@ class CarOfferView extends Component {
     renderRow(cars) {
         if (cars.length === 1) {
             return (
-                <CardGroup className="w-25">
+                <CardGroup className="w-75">
                     {cars.map(car => this.renderCarOffer(car))}
+                    <Card className="m-2 invisible" />
+                    <Card className="m-2 invisible" />
                 </CardGroup>
             );
         } else if(cars.length === 2) {
             return (
-                <CardGroup className="w-50">
+                <CardGroup className="w-75">
                     {cars.map(car => this.renderCarOffer(car))}
+                    <Card className="m-2 invisible" />
                 </CardGroup>
             );
         }

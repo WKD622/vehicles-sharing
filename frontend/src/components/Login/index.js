@@ -84,11 +84,11 @@ class LoginForm extends Component {
     }
 
     handleLoginChange(){
-        this.setState({login: true})
+        this.setState({login: true, username: '', password: '', email: ''})
     }
 
     handleRegisterChange(){
-        this.setState({login: false})
+        this.setState({login: false, username: '', password: '', email: ''})
     }
 
 

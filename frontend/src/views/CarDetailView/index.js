@@ -30,13 +30,13 @@ class CarDetailView extends Component {
         const { token } = this.props;
         document.body.classList.add("background-color");
         const carId = this.props.match.params.id;
-        axios.get(`http://127.0.0.1:8282/vehicles_sharing/vehicles/${carId}`, {headers: {Authorization: `Token ${token}`}})
+        axios.get(`http://temp-work.pl:8282/vehicles_sharing/vehicles/${carId}`, {headers: {Authorization: `Token ${token}`}})
             .then(res => {
                 const car = res.data;
                 console.log(car);
                 this.setState({car});
             });
-        axios.get(`http://127.0.0.1:8282/vehicles_sharing/photos/${carId}`, {headers: {Authorization: `Token ${token}`}})
+        axios.get(`http://temp-work.pl:8282/vehicles_sharing/photos/${carId}`, {headers: {Authorization: `Token ${token}`}})
             .then(res => {
                 console.log(res);
                 let photos = [];

@@ -37,7 +37,7 @@ class LoginForm extends Component {
     }
 
     register() {
-        axios.post(`http://127.0.0.1:8282/vehicles_sharing/users/`, this.getFormData({
+        axios.post(`http://temp-work.pl:8282/vehicles_sharing/users/`, this.getFormData({
             username: this.state.username,
             password: this.state.password,
             email: this.state.email
@@ -50,7 +50,7 @@ class LoginForm extends Component {
 
     login() {
         console.log('login start');
-        axios.post(`http://127.0.0.1:8282/vehicles_sharing/users/login/`, this.getFormData({
+        axios.post(`http://temp-work.pl:8282/vehicles_sharing/users/login/`, this.getFormData({
             username: this.state.username,
             password: this.state.password
         })).then(res => {

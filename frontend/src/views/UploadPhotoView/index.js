@@ -93,7 +93,7 @@ class UploadPhotoView extends Component {
             'Authorization': `Token ${token}`,
         };
         let formData = this.getFormData(data);
-        axios.post(`http://127.0.0.1:8282/vehicles_sharing/photos/`, formData, {headers: headers})
+        axios.post(`http://temp-work.pl:8282/vehicles_sharing/photos/`, formData, {headers: headers})
             .then(res => {
                 this.props.history.push('/cars');
             });

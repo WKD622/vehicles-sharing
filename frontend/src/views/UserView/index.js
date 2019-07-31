@@ -105,6 +105,8 @@ class UserView extends Component {
                             <td>{this.getPrice((reservation))}</td>
                             <td>{reservation.active ?
                                 <FaCheck /> : <FaBan />}</td>
+                            {reservation.active ? <Button variant="danger" onClick={() => this.deactivate(reservation.id)}>Deactivate</Button>
+                                : <Button variant="success" onClick={() => this.activate(reservation.id)}>Activate</Button>}
                         </tr>)}
                         </tbody>
                     </Table>
@@ -135,8 +137,6 @@ class UserView extends Component {
                                 <td>{this.getPrice((reservation))}</td>
                                 <td>{reservation.active ?
                                     <FaCheck /> : <FaBan />}</td>
-                                {reservation.active ? <Button variant="danger" onClick={() => this.deactivate(reservation.id)}>Deactivate</Button>
-                                    : <Button variant="success" onClick={() => this.activate(reservation.id)}>Activate</Button>}
                             </tr>)}
                         </tbody>
                     </Table>
@@ -150,8 +150,8 @@ class UserView extends Component {
             <div className="d-flex flex-column align-items-center mt-5">
                 <ButtonToolbar aria-label="User buttons">
                     <ButtonGroup className="mr-2" aria-label="Reservation buttons">
-                        <Button onClick={() => this.setState({activeTab: 'me'})}>My Reservations</Button>
-                        <Button onClick={() => this.setState({activeTab: 'someone'})}>Reservation Requests</Button>
+                        <Button onClick={() => this.setState({activeTab: 'someone'})}>My Reservations</Button>
+                        <Button onClick={() => this.setState({activeTab: 'me'})}>Reservation Requests</Button>
                     </ButtonGroup>
                     <ButtonGroup aria-label="Logout">
                         <Button variant="danger" onClick={this.logout}>Logout</Button>

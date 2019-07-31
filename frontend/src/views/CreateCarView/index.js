@@ -120,7 +120,7 @@ class CreateCarView extends Component {
             'Authorization': `Token ${token}`,
         };
         let formData = this.getFormData(data);
-        axios.post(`http://127.0.0.1:8000/vehicles_sharing/vehicles/`, formData, {headers: headers})
+        axios.post(`http://127.0.0.1:8282/vehicles_sharing/vehicles/`, formData, {headers: headers})
             .then(res => {
                 const carId = res.data.id;
                 this.props.history.push(`addPhoto/${carId}`);

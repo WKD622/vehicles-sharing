@@ -30,7 +30,7 @@ class UserView extends Component {
     componentDidMount() {
         const {token} = this.props;
         document.body.classList.add("background-color");
-        axios.get(`http://127.0.0.1:8000/vehicles_sharing/reservations/`, {headers: {Authorization: `Token ${token}`}})
+        axios.get(`http://127.0.0.1:8282/vehicles_sharing/reservations/`, {headers: {Authorization: `Token ${token}`}})
             .then(res => {
                 let my = [];
                 let someones = [];
@@ -62,7 +62,7 @@ class UserView extends Component {
             'Content-Type': 'application/json',
             'Authorization': `Token ${token}`,
         };
-        axios.post(`http://127.0.0.1:8000/vehicles_sharing/reservations/${id}/activate/`, {headers: headers});
+        axios.post(`http://127.0.0.1:8282/vehicles_sharing/reservations/${id}/activate/`, {headers: headers});
     }
 
     deactivate(id) {
@@ -71,7 +71,7 @@ class UserView extends Component {
             'Content-Type': 'application/json',
             'Authorization': `Token ${token}`,
         };
-        axios.post(`http://127.0.0.1:8000/vehicles_sharing/reservations/${id}/deactivate/`, {headers: headers});
+        axios.post(`http://127.0.0.1:8282/vehicles_sharing/reservations/${id}/deactivate/`, {headers: headers});
     }
 
     getPrice(reservation) {

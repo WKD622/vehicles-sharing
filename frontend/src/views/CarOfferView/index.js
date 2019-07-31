@@ -25,8 +25,8 @@ class CarOfferView extends Component {
     componentDidMount() {
         const { token } = this.props;
         document.body.classList.add("background-color");
-        Promise.all([axios.get(`http://127.0.0.1:8000/vehicles_sharing/vehicles/`, {headers: {Authorization: `Token ${token}`}}),
-                axios.get(`http://127.0.0.1:8000/vehicles_sharing/photos/`, {headers: {Authorization: `Token ${token}`}})])
+        Promise.all([axios.get(`http://127.0.0.1:8282/vehicles_sharing/vehicles/`, {headers: {Authorization: `Token ${token}`}}),
+                axios.get(`http://127.0.0.1:8282/vehicles_sharing/photos/`, {headers: {Authorization: `Token ${token}`}})])
             .then(([cars, photos]) => {
                 if(cars.data.results && photos.data.results) {
                     let carHolders =[];

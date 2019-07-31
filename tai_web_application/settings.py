@@ -24,7 +24,7 @@ SECRET_KEY = '^u&onh487!uodacpd4^2yr(o#d_7k(w+bun#-n8bckv6qq#uq1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['temp-work.pl', 'localhost', '127.0.0.1']
 
 # Application definition
 

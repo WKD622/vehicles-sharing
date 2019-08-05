@@ -89,3 +89,8 @@ target/
 __pycache__/
 venv/
 db.sqlite3
+
+
+/media
+media/
+media
